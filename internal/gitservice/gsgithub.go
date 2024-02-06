@@ -1,59 +1,59 @@
 package gitservice
 
 type GSGitHubReleaseAuthor struct {
-	login               string
-	id                  int
-	node_id             int
-	avatar_url          string
-	gravatar_id         string
-	url                 string
-	html_url            string
-	followers_url       string
-	following_url       string
-	gists_url           string
-	starred_url         string
-	subscriptions_url   string
-	organizations_url   string
-	repos_url           string
-	events_url          string
-	received_events_url string
-	// type string
-	site_admin bool
+	Login             string `json:"login"`
+	Id                int    `json:"id"`
+	NodeId            string `json:"node_id"`
+	AvatarUrl         string `json:"avatar_url"`
+	GravatarId        string `json:"gravatar_id"`
+	Url               string `json:"url"`
+	HtmlUrl           string `json:"html_url"`
+	FollowersUrl      string `json:"followers_url"`
+	FollowingUrl      string `json:"following_url"`
+	GistsUrl          string `json:"gists_url"`
+	StarredUrl        string `json:"starred_url"`
+	SubscriptionsUrl  string `json:"subscriptions_url"`
+	OrganizationsUrl  string `json:"organizations_url"`
+	ReposUrl          string `json:"repos_url"`
+	EventsUrl         string `json:"events_url"`
+	ReceivedEventsUrl string `json:"received_events_url"`
+	Type              string `json:"type"`
+	Site_admin        bool   `json:"site_admin"`
 }
 
 type GSGitHubReleaseAsset struct {
-	url     string
-	id      int
-	node_id string
-	name    string
+	Url    string `json:"url"`
+	Id     int    `json:"id"`
+	NodeId string `json:"node_id"`
+	Name   string `json:"name"`
 	// label null
-	uploader             GSGitHubReleaseAuthor
-	content_type         string
-	state                string
-	size                 int
-	download_count       int
-	created_at           string
-	updated_at           string
-	browser_download_url string
+	Uploader           GSGitHubReleaseAuthor `json:"uploader"`
+	ContentType        string                `json:"content_type"`
+	State              string                `json:"state"`
+	Size               int                   `json:"size"`
+	DownloadCount      int                   `json:"download_count"`
+	CreatedAt          string                `json:"created_at"`
+	UpdatedAt          string                `json:"updated_at"`
+	BrowserDownloadUrl string                `json:"browser_download_url"`
 }
 
 type GSGitHubRelease struct {
-	url              string
-	assets_url       string
-	upload_url       string
-	html_url         string
-	id               int
-	author           GSGitHubReleaseAuthor
-	node_id          string
-	tag_name         string
-	target_commitish string
-	name             string
-	draft            bool
-	prerelease       bool
-	created_at       string
-	published_at     string
-	assets           []GSGitHubReleaseAsset
-	tarball_url      string
-	zipball_url      string
-	body             string
+	Url             string                 `json:"url"`
+	AssetsUrl       string                 `json:"assets_url"`
+	UploadUrl       string                 `json:"upload_url"`
+	HtmlUrl         string                 `json:"html_url"`
+	Id              int                    `json:"id"`
+	Author          GSGitHubReleaseAuthor  `json:"author"`
+	NodeId          string                 `json:"node_id"`
+	TagName         string                 `json:"tag_name"`
+	TargetCommitish string                 `json:"target_commitish"`
+	Name            string                 `json:"name"`
+	Draft           bool                   `json:"draft"`
+	Prerelease      bool                   `json:"prerelease"`
+	CreatedAt       string                 `json:"created_at"`
+	PublishedAt     string                 `json:"published_at"`
+	Assets          []GSGitHubReleaseAsset `json:"assets"`
+	TarballUrl      string                 `json:"tarball_url"`
+	ZipballUrl      string                 `json:"zipball_url"`
+	Body            string                 `json:"body"`
 }

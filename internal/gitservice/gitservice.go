@@ -12,24 +12,20 @@ type ErrorMessage struct {
 	Message string `json:"message"`
 }
 
-type UserInfo struct {
-	Name string `json:"name"`
-	Blog string `json:"blog"`
-}
-
 var client = req.C().
 	SetTimeout(5 * time.Second)
 
-func Get() {
-	var userInfo UserInfo
+func GetGitHubReleases(username string, repository string) {
+	var releases []GSGitHubRelease
 	var errMsg ErrorMessage
 
 	resp, err := client.R().
-		SetPathParam("username", "imroc").
-		SetSuccessResult(&userInfo).
+		SetPathParam("username", username).
+		SetPathParam("repo", repository).
+		SetSuccessResult(&releases).
 		SetErrorResult(&errMsg).
 		EnableDump().
-		Get("https://api.github.com/users/{username}")
+		Get("https://api.github.com/repos/{username}/{repo}/releases")
 
 	if err != nil { // Error handling.
 		log.Println("error:", err)
@@ -44,7 +40,7 @@ func Get() {
 	}
 
 	if resp.IsSuccessState() { // Status code is between 200 and 299.
-		fmt.Printf("%s (%s)\n", userInfo.Name, userInfo.Blog)
+		fmt.Printf("%s (%s)\n", releases[0].Name, releases[0].Body)
 		return
 	}
 
