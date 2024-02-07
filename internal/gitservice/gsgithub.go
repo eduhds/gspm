@@ -22,11 +22,11 @@ type GSGitHubReleaseAuthor struct {
 }
 
 type GSGitHubReleaseAsset struct {
-	Url    string `json:"url"`
-	Id     int    `json:"id"`
-	NodeId string `json:"node_id"`
-	Name   string `json:"name"`
-	// label null
+	Url                string                `json:"url"`
+	Id                 int                   `json:"id"`
+	NodeId             string                `json:"node_id"`
+	Name               string                `json:"name"`
+	Label              string                `json:"label"`
 	Uploader           GSGitHubReleaseAuthor `json:"uploader"`
 	ContentType        string                `json:"content_type"`
 	State              string                `json:"state"`
