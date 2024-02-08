@@ -7,6 +7,12 @@ import (
 	"github.com/eduhds/gspm/internal/tui"
 )
 
+type Package struct {
+	Name     string
+	Tag      string
+	AssetUrl string
+}
+
 func main() {
 	fmt.Println("hello, world")
 
@@ -30,9 +36,21 @@ func main() {
 	options = []string{}
 
 	for _, asset := range assets[opt] {
-		options = append(options, fmt.Sprintf("%s - %s - %d", asset.Name, asset.ContentType, asset.Size))
+		options = append(options, asset.Name)
 	}
 
-	opt = tui.ShowOptions(options)
-	tui.ShowMessage(opt)
+	file := tui.ShowOptions(options)
+	tui.ShowMessage(file)
+
+	var res bool
+
+	for _, asset := range assets[opt] {
+		if asset.Name == file {
+			fmt.Println(asset.BrowserDownloadUrl)
+			res = gitservice.GetGitHubReleaseAsset(asset)
+			break
+		}
+	}
+
+	tui.ShowMessage(fmt.Sprintf("%v", res))
 }

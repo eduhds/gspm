@@ -2,6 +2,7 @@ package gitservice
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -40,4 +41,16 @@ func GetGitHubReleases(username string, repository string) ([]GSGitHubRelease, e
 
 	// Unknown status code.
 	return nil, errors.New("Unknown status: " + resp.Status)
+}
+
+func GetGitHubReleaseAsset(asset GSGitHubReleaseAsset) bool {
+	_, err := client.R().SetOutputFile("./" + asset.Name).
+		Get(asset.BrowserDownloadUrl)
+
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	return true
 }
