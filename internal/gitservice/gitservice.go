@@ -3,6 +3,7 @@ package gitservice
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -13,9 +14,11 @@ type ErrorMessage struct {
 }
 
 var client = req.C().
-	SetTimeout(5 * time.Second)
+	SetTimeout(15 * time.Second)
 
-func GetGitHubReleases(username string, repository string) ([]GSGitHubRelease, error) {
+func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
+	var username string = strings.Split(packageName, "/")[0]
+	var repository string = strings.Split(packageName, "/")[1]
 	var releases []GSGitHubRelease
 	var errMsg ErrorMessage
 
@@ -44,7 +47,7 @@ func GetGitHubReleases(username string, repository string) ([]GSGitHubRelease, e
 }
 
 func GetGitHubReleaseAsset(asset GSGitHubReleaseAsset) bool {
-	_, err := client.R().SetOutputFile("./" + asset.Name).
+	_, err := client.R().SetOutputFile("/tmp/" + asset.Name).
 		Get(asset.BrowserDownloadUrl)
 
 	if err != nil {

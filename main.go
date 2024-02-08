@@ -7,50 +7,64 @@ import (
 	"github.com/eduhds/gspm/internal/tui"
 )
 
-type Package struct {
+type GSPackage struct {
 	Name     string
 	Tag      string
 	AssetUrl string
 }
 
 func main() {
-	fmt.Println("hello, world")
+	tui.ShowMessage("Welcome to GSPM!")
 
-	releases, err := gitservice.GetGitHubReleases("eduhds", "logduto")
+	var gsPackage GSPackage
+	gsPackage.Name = "eduhds/logduto"
+	gsPackage.Tag = "latest"
+
+	stopSpinner := tui.ShowSpinner("Fetching releases...")
+
+	releases, err := gitservice.GetGitHubReleases(gsPackage.Name)
 
 	if err != nil {
+		stopSpinner("fail")
 		panic(err)
 	}
 
-	var options []string
+	stopSpinner("success")
+
+	var tag string
+	var tagOptions []string
 	var assets = make(map[string][]gitservice.GSGitHubReleaseAsset)
+	var assetOptions []string
 
 	for _, release := range releases {
-		options = append(options, release.TagName)
+		if gsPackage.Tag != "" && release.TagName == gsPackage.Tag {
+			tag = release.TagName
+			break
+		}
+		tagOptions = append(tagOptions, release.TagName)
 		assets[release.TagName] = release.Assets
 	}
 
-	opt := tui.ShowOptions(options)
-	tui.ShowMessage(opt)
-
-	options = []string{}
-
-	for _, asset := range assets[opt] {
-		options = append(options, asset.Name)
+	if tag == "" {
+		tag = tui.ShowOptions("\nSelect a tag", tagOptions)
 	}
 
-	file := tui.ShowOptions(options)
-	tui.ShowMessage(file)
+	gsPackage.Tag = tag
+
+	for _, asset := range assets[tag] {
+		assetOptions = append(assetOptions, asset.Name)
+	}
+
+	assetName := tui.ShowOptions("\nSelect an asset", assetOptions)
 
 	var res bool
 
-	for _, asset := range assets[opt] {
-		if asset.Name == file {
-			fmt.Println(asset.BrowserDownloadUrl)
+	for _, asset := range assets[tag] {
+		if asset.Name == assetName {
 			res = gitservice.GetGitHubReleaseAsset(asset)
 			break
 		}
 	}
 
-	tui.ShowMessage(fmt.Sprintf("%v", res))
+	tui.ShowInfo(fmt.Sprintf("Result %v", res))
 }
