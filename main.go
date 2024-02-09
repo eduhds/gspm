@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/eduhds/gspm/internal/gitservice"
 	"github.com/eduhds/gspm/internal/tui"
 )
@@ -20,16 +18,16 @@ func main() {
 	gsPackage.Name = "eduhds/logduto"
 	gsPackage.Tag = "latest"
 
-	stopSpinner := tui.ShowSpinner("Fetching releases...")
+	stopReleasesSpn := tui.ShowSpinner("Fetching releases...")
 
 	releases, err := gitservice.GetGitHubReleases(gsPackage.Name)
 
 	if err != nil {
-		stopSpinner("fail")
+		stopReleasesSpn("fail")
 		panic(err)
 	}
 
-	stopSpinner("success")
+	stopReleasesSpn("success")
 
 	var tag string
 	var tagOptions []string
@@ -46,7 +44,7 @@ func main() {
 	}
 
 	if tag == "" {
-		tag = tui.ShowOptions("\nSelect a tag", tagOptions)
+		tag = tui.ShowOptions("Select a tag", tagOptions)
 	}
 
 	gsPackage.Tag = tag
@@ -55,7 +53,9 @@ func main() {
 		assetOptions = append(assetOptions, asset.Name)
 	}
 
-	assetName := tui.ShowOptions("\nSelect an asset", assetOptions)
+	assetName := tui.ShowOptions("Select an asset", assetOptions)
+
+	stopAssetSpn := tui.ShowSpinner("Downloading asset...")
 
 	var res bool
 
@@ -66,5 +66,9 @@ func main() {
 		}
 	}
 
-	tui.ShowInfo(fmt.Sprintf("Result %v", res))
+	if res {
+		stopAssetSpn("success")
+	} else {
+		stopAssetSpn("fail")
+	}
 }
