@@ -14,7 +14,7 @@ type ErrorMessage struct {
 }
 
 var client = req.C().
-	SetTimeout(15 * time.Second)
+	SetTimeout(60 * time.Second)
 
 func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 	var username string = strings.Split(packageName, "/")[0]
