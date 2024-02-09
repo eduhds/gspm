@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/alexflint/go-arg"
 	"github.com/eduhds/gspm/internal/gitservice"
 	"github.com/eduhds/gspm/internal/tui"
 )
@@ -11,8 +12,15 @@ type GSPackage struct {
 	AssetUrl string
 }
 
+var args struct {
+	Command string `arg:"positional"`
+	Value   string `arg:"positional"`
+}
+
 func main() {
-	tui.ShowMessage("Welcome to GSPM!")
+	arg.MustParse(&args)
+
+	tui.ShowMessage("Welcome to GSPM! " + args.Command + " " + args.Value)
 
 	var gsPackage GSPackage
 	gsPackage.Name = "eduhds/logduto"
