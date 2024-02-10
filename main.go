@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 	"strings"
 
 	"github.com/alexflint/go-arg"
@@ -13,6 +14,7 @@ type GSPackage struct {
 	Name     string
 	Tag      string
 	AssetUrl string
+	Script   string
 }
 
 var args struct {
@@ -80,6 +82,7 @@ func main() {
 
 		for _, asset := range assets[tag] {
 			if asset.Name == assetName {
+				gsPackage.AssetUrl = asset.BrowserDownloadUrl
 				res = gitservice.GetGitHubReleaseAsset(asset)
 				break
 			}
@@ -87,6 +90,33 @@ func main() {
 
 		if res {
 			stopAssetSpn("success")
+			tui.ShowInfo("Asset downloaded path: /tmp/" + assetName)
+
+			runScript := tui.ShowConfirm("Do you want to run a script?")
+
+			if runScript {
+				script := tui.ShowTextInput("Enter a script")
+				gsPackage.Script = script
+			}
+
+			if len(gsPackage.Script) == 0 {
+				tui.ShowInfo("Script not provided.")
+			} else {
+				stopScriptSpn := tui.ShowSpinner("Running provided script...")
+
+				tui.ShowBox(gsPackage.Script)
+
+				out, err := exec.Command("bash", "-c", gsPackage.Script).Output()
+
+				if err != nil {
+					stopScriptSpn("fail")
+					tui.ShowBox(string(out))
+					tui.ShowError(err.Error())
+				} else {
+					stopScriptSpn("success")
+					tui.ShowSuccess("Script executed successfully.")
+				}
+			}
 		} else {
 			stopAssetSpn("fail")
 		}
