@@ -60,3 +60,7 @@ func ShowConfirm(message string) bool {
 func ShowBox(text string) {
 	pterm.DefaultBox.Println(text)
 }
+
+func ShowLine() {
+	pterm.Println()
+}
