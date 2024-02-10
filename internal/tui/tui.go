@@ -9,7 +9,15 @@ func ShowMessage(message string) {
 }
 
 func ShowInfo(message string) {
-	pterm.Info.Printfln(pterm.Green(message))
+	pterm.Info.Printfln(pterm.LightBlue(message))
+}
+
+func ShowSuccess(message string) {
+	pterm.Success.Printfln(pterm.Green(message))
+}
+
+func ShowError(message string) {
+	pterm.Error.Printfln(pterm.Red(message))
 }
 
 func ShowOptions(title string, options []string) string {
@@ -17,6 +25,7 @@ func ShowOptions(title string, options []string) string {
 		WithDefaultText(title).
 		WithOptions(options).
 		Show()
+	pterm.Println()
 	return selectedOption
 }
 
@@ -31,4 +40,23 @@ func ShowSpinner(message string) func(string) {
 			spinner.Info()
 		}
 	}
+}
+
+func ShowTextInput(message string) string {
+	input, _ := pterm.DefaultInteractiveTextInput.
+		WithDefaultText(message).
+		Show()
+	return input
+}
+
+func ShowConfirm(message string) bool {
+	result, _ := pterm.DefaultInteractiveConfirm.
+		WithDefaultText(message).
+		Show()
+	pterm.Println()
+	return result
+}
+
+func ShowBox(text string) {
+	pterm.DefaultBox.Println(text)
 }
