@@ -104,25 +104,19 @@ func main() {
 
 			if res {
 				stopAssetSpn("success")
-				tui.ShowInfo("Asset downloaded path: /tmp/" + assetName)
 
 				runScript := tui.ShowConfirm("Do you want to run a script?")
 
 				if runScript {
+					pkgPath := "PKG_PATH=~/Downloads/" + assetName
+					tui.ShowInfo(pkgPath)
 					script := tui.ShowTextInput("Enter a script")
-					gsPackage.Script = script
+					gsPackage.Script = pkgPath + "\n" + script
 				}
 
 				if len(gsPackage.Script) == 0 {
 					tui.ShowInfo("Script not provided.")
-
-					_, err := exec.Command("bash", "-c", "cp /tmp/"+assetName+" ~/Downloads").Output()
-
-					if err != nil {
-						tui.ShowError(err.Error())
-					} else {
-						tui.ShowSuccess("Asset copied to ~/Downloads/" + assetName)
-					}
+					tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
 				} else {
 					stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
@@ -132,7 +126,9 @@ func main() {
 
 					if err != nil {
 						stopScriptSpn("fail")
-						tui.ShowBox(string(out))
+						if string(out) != "" {
+							tui.ShowBox(string(out))
+						}
 						tui.ShowError(err.Error())
 					} else {
 						stopScriptSpn("success")

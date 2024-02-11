@@ -3,6 +3,7 @@ package gitservice
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -47,7 +48,9 @@ func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 }
 
 func GetGitHubReleaseAsset(asset GSGitHubReleaseAsset) bool {
-	_, err := client.R().SetOutputFile("/tmp/" + asset.Name).
+	downloadsDir := os.Getenv("HOME") + "/Downloads/"
+
+	_, err := client.R().SetOutputFile(downloadsDir + asset.Name).
 		Get(asset.BrowserDownloadUrl)
 
 	if err != nil {
