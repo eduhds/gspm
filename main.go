@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,6 +19,11 @@ type GSPackage struct {
 	Script   string
 }
 
+type GSConfig struct {
+	GSPM     struct{}
+	Packages []GSPackage
+}
+
 var args struct {
 	Command string   `arg:"positional"`
 	Values  []string `arg:"positional"`
@@ -25,6 +31,23 @@ var args struct {
 
 func main() {
 	arg.MustParse(&args)
+
+	var config GSConfig
+
+	configFile, err1 := os.ReadFile("config.json")
+
+	if err1 != nil {
+		tui.ShowError("config.json not found")
+	} else {
+		err2 := json.Unmarshal(configFile, &config)
+
+		if err2 != nil {
+			tui.ShowError("Failed to parse config.json")
+			os.Exit(1)
+		}
+	}
+
+	tui.ShowInfo(fmt.Sprintf("Loaded %d packages from config.json", len(config.Packages)))
 
 	if args.Command == "add" {
 		tui.ShowInfo("Adding packages...")
@@ -107,11 +130,12 @@ func main() {
 
 				runScript := tui.ShowConfirm("Do you want to run a script?")
 
+				pkgPath := "PKG_PATH=~/Downloads/" + assetName
+
 				if runScript {
-					pkgPath := "PKG_PATH=~/Downloads/" + assetName
 					tui.ShowInfo(pkgPath)
 					script := tui.ShowTextInput("Enter a script")
-					gsPackage.Script = pkgPath + "\n" + script
+					gsPackage.Script = script
 				}
 
 				if len(gsPackage.Script) == 0 {
@@ -120,9 +144,9 @@ func main() {
 				} else {
 					stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
-					tui.ShowBox(gsPackage.Script)
+					tui.ShowBox(pkgPath + "\n" + gsPackage.Script)
 
-					out, err := exec.Command("bash", "-c", gsPackage.Script).Output()
+					out, err := exec.Command("bash", "-c", pkgPath+"\n"+gsPackage.Script).Output()
 
 					if err != nil {
 						stopScriptSpn("fail")
@@ -133,11 +157,22 @@ func main() {
 					} else {
 						stopScriptSpn("success")
 						tui.ShowSuccess("Script executed successfully.")
+
+						config.Packages = append(config.Packages, gsPackage)
 					}
 				}
 			} else {
 				stopAssetSpn("fail")
 			}
+		}
+
+		// Save config as json file
+		configBytes, _ := json.MarshalIndent(config, "", "    ")
+
+		err := os.WriteFile("config.json", configBytes, 0644)
+
+		if err != nil {
+			panic(err)
 		}
 	} else {
 		tui.ShowError("Unknown command: " + args.Command)
