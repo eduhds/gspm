@@ -47,11 +47,11 @@ func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 	return nil, errors.New("Unknown status: " + resp.Status)
 }
 
-func GetGitHubReleaseAsset(asset GSGitHubReleaseAsset) bool {
+func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) bool {
 	downloadsDir := os.Getenv("HOME") + "/Downloads/"
 
-	_, err := client.R().SetOutputFile(downloadsDir + asset.Name).
-		Get(asset.BrowserDownloadUrl)
+	_, err := client.R().SetOutputFile(downloadsDir + assetName).
+		Get(assetDownloadUrl)
 
 	if err != nil {
 		fmt.Println(err)
