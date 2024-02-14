@@ -29,6 +29,29 @@ var args struct {
 	Values  []string `arg:"positional"`
 }
 
+func RunScript(assetPath string, providedScript string) bool {
+	script := "ASSET_PATH=" + assetPath + "\n" + providedScript
+
+	stopScriptSpn := tui.ShowSpinner("Running provided script...")
+
+	tui.ShowBox(script)
+
+	out, err := exec.Command("bash", "-c", script).Output()
+
+	if err != nil {
+		stopScriptSpn("fail")
+		if string(out) != "" {
+			tui.ShowBox(string(out))
+		}
+		tui.ShowError(err.Error())
+		return false
+	} else {
+		stopScriptSpn("success")
+		tui.ShowSuccess("Script executed successfully.")
+		return true
+	}
+}
+
 func main() {
 	arg.MustParse(&args)
 
@@ -150,10 +173,8 @@ func main() {
 
 					runScript := tui.ShowConfirm("Do you want to run a script?")
 
-					pkgPath := "PKG_PATH=~/Downloads/" + assetName
-
 					if runScript {
-						tui.ShowInfo(pkgPath)
+						tui.ShowInfo("Tip: Use $ASSET_PATH to reference the asset path")
 						script := tui.ShowTextInput("Enter a script")
 						gsPackage.Script = script
 					}
@@ -162,22 +183,7 @@ func main() {
 						tui.ShowInfo("Script not provided.")
 						tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
 					} else {
-						stopScriptSpn := tui.ShowSpinner("Running provided script...")
-
-						tui.ShowBox(pkgPath + "\n" + gsPackage.Script)
-
-						out, err := exec.Command("bash", "-c", pkgPath+"\n"+gsPackage.Script).Output()
-
-						if err != nil {
-							stopScriptSpn("fail")
-							if string(out) != "" {
-								tui.ShowBox(string(out))
-							}
-							tui.ShowError(err.Error())
-						} else {
-							stopScriptSpn("success")
-							tui.ShowSuccess("Script executed successfully.")
-
+						if RunScript("~/Downloads/"+assetName, gsPackage.Script) {
 							config.Packages = append(config.Packages, gsPackage)
 						}
 					}
@@ -197,28 +203,11 @@ func main() {
 				if res {
 					stopAssetSpn("success")
 
-					pkgPath := "PKG_PATH=~/Downloads/" + assetNameFromUrl
-
 					if len(gsPackage.Script) == 0 {
 						tui.ShowInfo("Script not provided.")
 						tui.ShowSuccess("Package located at ~/Downloads/" + assetNameFromUrl)
 					} else {
-						stopScriptSpn := tui.ShowSpinner("Running provided script...")
-
-						tui.ShowBox(pkgPath + "\n" + gsPackage.Script)
-
-						out, err := exec.Command("bash", "-c", pkgPath+"\n"+gsPackage.Script).Output()
-
-						if err != nil {
-							stopScriptSpn("fail")
-							if string(out) != "" {
-								tui.ShowBox(string(out))
-							}
-							tui.ShowError(err.Error())
-						} else {
-							stopScriptSpn("success")
-							tui.ShowSuccess("Script executed successfully.")
-						}
+						RunScript("~/Downloads/"+assetNameFromUrl, gsPackage.Script)
 					}
 				} else {
 					stopAssetSpn("fail")
