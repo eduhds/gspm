@@ -52,56 +52,74 @@ func RunScript(assetPath string, providedScript string) bool {
 	}
 }
 
-func main() {
-	arg.MustParse(&args)
-
+func ReadConfig() GSConfig {
 	var config GSConfig
 
-	configFile, err1 := os.ReadFile("config.json")
+	configFile, err := os.ReadFile("config.json")
 
-	if err1 != nil {
+	if err != nil {
 		tui.ShowError("config.json not found")
 	} else {
-		err2 := json.Unmarshal(configFile, &config)
-
-		if err2 != nil {
+		err = json.Unmarshal(configFile, &config)
+		if err != nil {
 			tui.ShowError("Failed to parse config.json")
-			os.Exit(1)
 		}
 	}
 
-	tui.ShowInfo(fmt.Sprintf("Loaded %d packages from config.json", len(config.Packages)))
+	return config
+}
 
-	if args.Command == "add" {
+func main() {
+	arg.MustParse(&args)
+
+	config := ReadConfig()
+	countPackages := len(config.Packages)
+
+	if args.Command == "install" {
+		if countPackages == 0 {
+			tui.ShowInfo("No packages found in config.json")
+			return
+		}
+		tui.ShowInfo(fmt.Sprintf("Loaded %d packages from config.json", countPackages))
+		// TODO: Loop through packages and install them
+	} else if args.Command == "add" {
+		if len(args.Values) == 0 {
+			tui.ShowError("No packages provided")
+			return
+		}
+
 		tui.ShowInfo("Adding packages...")
 
 		for _, value := range args.Values {
 			tui.ShowLine()
 			packageInfo := strings.Split(value, "@")
+			packageName := packageInfo[0]
+			packageTag := ""
 
-			var gsPackage GSPackage
-			gsPackage.Name = packageInfo[0]
-
-			if len(strings.Split(gsPackage.Name, "/")) != 2 {
-				tui.ShowError("Invalid package name: " + gsPackage.Name)
+			if len(strings.Split(packageName, "/")) != 2 {
+				tui.ShowError("Invalid package name: " + packageName)
 				continue
 			}
 
 			if len(packageInfo) > 1 {
-				gsPackage.Tag = packageInfo[1]
+				packageTag = packageInfo[1]
 			}
+
+			var gsPackage GSPackage
+			gsPackage.Name = packageName
+			gsPackage.Tag = packageTag
 
 			var needDownloadReleases bool = true
 
-			for _, configPackage := range config.Packages {
-				if configPackage.Name == gsPackage.Name {
-					if gsPackage.Tag != "" && gsPackage.Tag != "latest" {
-						if configPackage.Tag == gsPackage.Tag {
+			if gsPackage.Tag != "latest" {
+				for _, configPackage := range config.Packages {
+					if configPackage.Name == gsPackage.Name {
+						if gsPackage.Tag == "" || configPackage.Tag == gsPackage.Tag {
 							needDownloadReleases = false
 							gsPackage = configPackage
 						}
+						break
 					}
-					break
 				}
 			}
 
@@ -114,7 +132,8 @@ func main() {
 
 				if err != nil {
 					stopReleasesSpn("fail")
-					panic(err)
+					tui.ShowError(err.Error())
+					return
 				}
 
 				stopReleasesSpn("success")
