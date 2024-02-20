@@ -29,6 +29,8 @@ var args struct {
 	Values  []string `arg:"positional"`
 }
 
+const CONFIG_FILE = "config.json"
+
 func RunScript(assetPath string, providedScript string) bool {
 	script := "ASSET_PATH=" + assetPath + "\n" + providedScript
 
@@ -55,14 +57,14 @@ func RunScript(assetPath string, providedScript string) bool {
 func ReadConfig() GSConfig {
 	var config GSConfig
 
-	configFile, err := os.ReadFile("config.json")
+	configFile, err := os.ReadFile(CONFIG_FILE)
 
 	if err != nil {
-		tui.ShowError("config.json not found")
+		tui.ShowError("Failed to read config file: " + err.Error())
 	} else {
 		err = json.Unmarshal(configFile, &config)
 		if err != nil {
-			tui.ShowError("Failed to parse config.json")
+			tui.ShowError("Failed to parse config file: " + err.Error())
 		}
 	}
 
@@ -77,10 +79,10 @@ func main() {
 
 	if args.Command == "install" {
 		if countPackages == 0 {
-			tui.ShowInfo("No packages found in config.json")
+			tui.ShowInfo("No packages found")
 			return
 		}
-		tui.ShowInfo(fmt.Sprintf("Loaded %d packages from config.json", countPackages))
+		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
 		// TODO: Loop through packages and install them
 	} else if args.Command == "add" {
 		if len(args.Values) == 0 {
@@ -109,13 +111,10 @@ func main() {
 			gsPackage.Name = packageName
 			gsPackage.Tag = packageTag
 
-			var needDownloadReleases bool = true
-
 			if gsPackage.Tag != "latest" {
 				for _, configPackage := range config.Packages {
 					if configPackage.Name == gsPackage.Name {
 						if gsPackage.Tag == "" || configPackage.Tag == gsPackage.Tag {
-							needDownloadReleases = false
 							gsPackage = configPackage
 						}
 						break
@@ -123,9 +122,9 @@ func main() {
 				}
 			}
 
-			var res bool
+			var assetName = ""
 
-			if needDownloadReleases {
+			if gsPackage.AssetUrl == "" {
 				stopReleasesSpn := tui.ShowSpinner(fmt.Sprintf("Fetching %s releases...", gsPackage.Name))
 
 				releases, err := gitservice.GetGitHubReleases(gsPackage.Name)
@@ -150,9 +149,7 @@ func main() {
 
 				for _, release := range releases {
 					if tag == "" {
-						if gsPackage.Tag == "latest" {
-							tag = release.TagName
-						} else if gsPackage.Tag == release.TagName {
+						if gsPackage.Tag == "latest" || gsPackage.Tag == release.TagName {
 							tag = release.TagName
 						}
 						tagOptions = append(tagOptions, release.TagName)
@@ -175,72 +172,56 @@ func main() {
 					assetOptions = append(assetOptions, asset.Name)
 				}
 
-				assetName := tui.ShowOptions("Select an asset", assetOptions)
-
-				stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
+				assetName = tui.ShowOptions("Select an asset", assetOptions)
 
 				for _, asset := range assets[tag] {
 					if asset.Name == assetName {
 						gsPackage.AssetUrl = asset.BrowserDownloadUrl
-						res = gitservice.GetGitHubReleaseAsset(asset.Name, asset.BrowserDownloadUrl)
 						break
 					}
 				}
+			} else {
+				downloadUrlSplited := strings.Split(gsPackage.AssetUrl, "/")
+				assetNameFromUrl := downloadUrlSplited[len(downloadUrlSplited)-1]
+				assetName = assetNameFromUrl
+			}
 
-				if res {
-					stopAssetSpn("success")
+			stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
 
+			success := gitservice.GetGitHubReleaseAsset(assetName, gsPackage.AssetUrl)
+
+			if success {
+				stopAssetSpn("success")
+
+				if gsPackage.Script == "" {
 					runScript := tui.ShowConfirm("Do you want to run a script?")
 
 					if runScript {
 						tui.ShowInfo("Tip: Use $ASSET_PATH to reference the asset path")
 						script := tui.ShowTextInput("Enter a script")
 						gsPackage.Script = script
-					}
 
-					if len(gsPackage.Script) == 0 {
-						tui.ShowInfo("Script not provided.")
-						tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
-					} else {
 						if RunScript("~/Downloads/"+assetName, gsPackage.Script) {
 							config.Packages = append(config.Packages, gsPackage)
 						}
+					} else {
+						tui.ShowInfo("Script not provided.")
+						tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
 					}
 				} else {
-					stopAssetSpn("fail")
+					RunScript("~/Downloads/"+assetName, gsPackage.Script)
 				}
 			} else {
-				tui.ShowInfo("Download Package from config")
-
-				downloadUrlSplited := strings.Split(gsPackage.AssetUrl, "/")
-				assetNameFromUrl := downloadUrlSplited[len(downloadUrlSplited)-1]
-
-				stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetNameFromUrl))
-
-				res = gitservice.GetGitHubReleaseAsset(assetNameFromUrl, gsPackage.AssetUrl)
-
-				if res {
-					stopAssetSpn("success")
-
-					if len(gsPackage.Script) == 0 {
-						tui.ShowInfo("Script not provided.")
-						tui.ShowSuccess("Package located at ~/Downloads/" + assetNameFromUrl)
-					} else {
-						RunScript("~/Downloads/"+assetNameFromUrl, gsPackage.Script)
-					}
-				} else {
-					stopAssetSpn("fail")
-				}
+				stopAssetSpn("fail")
 			}
 		}
 
-		// Save config as json file
 		configBytes, _ := json.MarshalIndent(config, "", "    ")
 
-		err := os.WriteFile("config.json", configBytes, 0644)
+		err := os.WriteFile(CONFIG_FILE, configBytes, 0644)
 
 		if err != nil {
-			panic(err)
+			tui.ShowError(err.Error())
 		}
 	} else {
 		tui.ShowError("Unknown command: " + args.Command)
