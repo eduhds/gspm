@@ -20,6 +20,10 @@ func ShowError(message string) {
 	pterm.Error.Printfln(pterm.Red(message))
 }
 
+func ShowWarning(message string) {
+	pterm.Warning.Printfln(pterm.Yellow(message))
+}
+
 func ShowOptions(title string, options []string) string {
 	selectedOption, _ := pterm.DefaultInteractiveSelect.
 		WithDefaultText(title).
