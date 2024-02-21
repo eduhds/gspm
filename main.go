@@ -98,6 +98,20 @@ func main() {
 		}
 		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
 		// TODO: Loop through packages and install them
+	} else if args.Command == "list" {
+		if countPackages == 0 {
+			tui.ShowInfo("No packages found")
+			return
+		}
+
+		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
+		tui.ShowLine()
+
+		for _, item := range platformPackages {
+			tui.ShowMessage("> " + item.Name + "@" + item.Tag)
+			tui.ShowMessage(item.AssetUrl)
+			tui.ShowLine()
+		}
 	} else if args.Command == "add" {
 		if len(args.Values) == 0 {
 			tui.ShowError("No packages provided")
