@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 
 	"github.com/alexflint/go-arg"
@@ -17,6 +18,7 @@ type GSPackage struct {
 	Tag      string
 	AssetUrl string
 	Script   string
+	Platform string
 }
 
 type GSConfig struct {
@@ -113,6 +115,9 @@ func main() {
 
 			if gsPackage.Tag != "latest" {
 				for _, configPackage := range config.Packages {
+					if configPackage.Platform != runtime.GOOS {
+						continue
+					}
 					if configPackage.Name == gsPackage.Name {
 						if gsPackage.Tag == "" || configPackage.Tag == gsPackage.Tag {
 							gsPackage = configPackage
@@ -202,6 +207,7 @@ func main() {
 						gsPackage.Script = script
 
 						if RunScript("~/Downloads/"+assetName, gsPackage.Script) {
+							gsPackage.Platform = runtime.GOOS
 							config.Packages = append(config.Packages, gsPackage)
 						}
 					} else {
