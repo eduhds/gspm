@@ -31,7 +31,8 @@ var args struct {
 	Values  []string `arg:"positional"`
 }
 
-const CONFIG_FILE = "config.json"
+var home = os.Getenv("HOME")
+var configFile = home + "/.config/gspm.json"
 
 func RunScript(assetPath string, providedScript string) bool {
 	script := "ASSET_PATH=" + assetPath + "\n" + providedScript
@@ -59,25 +60,36 @@ func RunScript(assetPath string, providedScript string) bool {
 func ReadConfig() GSConfig {
 	var config GSConfig
 
-	configFile, err := os.ReadFile(CONFIG_FILE)
+	configFile, err := os.ReadFile(configFile)
 
 	if err != nil {
-		tui.ShowError("Failed to read config file: " + err.Error())
+		tui.ShowWarning("Config file not found: " + err.Error())
 	} else {
 		err = json.Unmarshal(configFile, &config)
 		if err != nil {
-			tui.ShowError("Failed to parse config file: " + err.Error())
+			tui.ShowWarning("Config file is not valid: " + err.Error())
 		}
 	}
 
 	return config
 }
 
+func PlatformPackages(config GSConfig) []GSPackage {
+	var packages []GSPackage
+	for _, item := range config.Packages {
+		if item.Platform == runtime.GOOS {
+			packages = append(packages, item)
+		}
+	}
+	return packages
+}
+
 func main() {
 	arg.MustParse(&args)
 
 	config := ReadConfig()
-	countPackages := len(config.Packages)
+	platformPackages := PlatformPackages(config)
+	countPackages := len(platformPackages)
 
 	if args.Command == "install" {
 		if countPackages == 0 {
@@ -114,10 +126,7 @@ func main() {
 			gsPackage.Tag = packageTag
 
 			if gsPackage.Tag != "latest" {
-				for _, configPackage := range config.Packages {
-					if configPackage.Platform != runtime.GOOS {
-						continue
-					}
+				for _, configPackage := range platformPackages {
 					if configPackage.Name == gsPackage.Name {
 						if gsPackage.Tag == "" || configPackage.Tag == gsPackage.Tag {
 							gsPackage = configPackage
@@ -206,7 +215,7 @@ func main() {
 						script := tui.ShowTextInput("Enter a script")
 						gsPackage.Script = script
 
-						if RunScript("~/Downloads/"+assetName, gsPackage.Script) {
+						if RunScript(home+"/Downloads/"+assetName, gsPackage.Script) {
 							gsPackage.Platform = runtime.GOOS
 							config.Packages = append(config.Packages, gsPackage)
 						}
@@ -215,7 +224,7 @@ func main() {
 						tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
 					}
 				} else {
-					RunScript("~/Downloads/"+assetName, gsPackage.Script)
+					RunScript(home+"/Downloads/"+assetName, gsPackage.Script)
 				}
 			} else {
 				stopAssetSpn("fail")
@@ -224,10 +233,10 @@ func main() {
 
 		configBytes, _ := json.MarshalIndent(config, "", "    ")
 
-		err := os.WriteFile(CONFIG_FILE, configBytes, 0644)
+		err := os.WriteFile(configFile, configBytes, 0644)
 
 		if err != nil {
-			tui.ShowError(err.Error())
+			tui.ShowWarning("Cannot to write config file: " + err.Error())
 		}
 	} else {
 		tui.ShowError("Unknown command: " + args.Command)
