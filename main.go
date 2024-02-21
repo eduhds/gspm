@@ -74,6 +74,16 @@ func ReadConfig() GSConfig {
 	return config
 }
 
+func WriteConfig(config GSConfig) {
+	configBytes, _ := json.MarshalIndent(config, "", "    ")
+
+	err := os.WriteFile(configFile, configBytes, 0644)
+
+	if err != nil {
+		tui.ShowWarning("Cannot to write config file: " + err.Error())
+	}
+}
+
 func PlatformPackages(config GSConfig) []GSPackage {
 	var packages []GSPackage
 	for _, item := range config.Packages {
@@ -245,13 +255,26 @@ func main() {
 			}
 		}
 
-		configBytes, _ := json.MarshalIndent(config, "", "    ")
-
-		err := os.WriteFile(configFile, configBytes, 0644)
-
-		if err != nil {
-			tui.ShowWarning("Cannot to write config file: " + err.Error())
+		WriteConfig(config)
+	} else if args.Command == "remove" {
+		if countPackages == 0 {
+			tui.ShowInfo("No packages found")
+			return
 		}
+
+		var keepedPackages []GSPackage
+
+		for _, item := range config.Packages {
+			if item.Platform == runtime.GOOS || item.Name == args.Values[0] {
+				tui.ShowInfo("Package " + item.Name + " removed")
+			} else {
+				keepedPackages = append(keepedPackages, item)
+			}
+		}
+
+		config.Packages = keepedPackages
+
+		WriteConfig(config)
 	} else {
 		tui.ShowError("Unknown command: " + args.Command)
 		os.Exit(1)
