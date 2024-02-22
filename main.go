@@ -94,12 +94,19 @@ func PlatformPackages(config GSConfig) []GSPackage {
 	return packages
 }
 
+func AssetNameFromUrl(url string) string {
+	urlSplited := strings.Split(url, "/")
+	assetNameFromUrl := urlSplited[len(urlSplited)-1]
+	return assetNameFromUrl
+}
+
 func main() {
 	arg.MustParse(&args)
 
 	config := ReadConfig()
 	platformPackages := PlatformPackages(config)
 	countPackages := len(platformPackages)
+	downloadPrefix := home + "/Downloads/"
 
 	if args.Command == "install" {
 		if countPackages == 0 {
@@ -107,7 +114,12 @@ func main() {
 			return
 		}
 		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
-		// TODO: Loop through packages and install them
+
+		for _, item := range platformPackages {
+			tui.ShowInfo("Installing package: " + item.Name)
+			assetName := AssetNameFromUrl(item.AssetUrl)
+			RunScript(downloadPrefix+assetName, item.Script)
+		}
 	} else if args.Command == "list" {
 		if countPackages == 0 {
 			tui.ShowInfo("No packages found")
@@ -118,8 +130,9 @@ func main() {
 		tui.ShowLine()
 
 		for _, item := range platformPackages {
-			tui.ShowMessage("> " + item.Name + "@" + item.Tag)
-			tui.ShowMessage(item.AssetUrl)
+			tui.ShowMessage("📦 " + item.Name + "@" + item.Tag)
+			tui.ShowMessage("🔗 " + item.AssetUrl)
+			tui.ShowMessage("🛠️ " + item.Script)
 			tui.ShowLine()
 		}
 	} else if args.Command == "add" {
@@ -219,9 +232,7 @@ func main() {
 					}
 				}
 			} else {
-				downloadUrlSplited := strings.Split(gsPackage.AssetUrl, "/")
-				assetNameFromUrl := downloadUrlSplited[len(downloadUrlSplited)-1]
-				assetName = assetNameFromUrl
+				assetName = AssetNameFromUrl(gsPackage.AssetUrl)
 			}
 
 			stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
@@ -239,7 +250,7 @@ func main() {
 						script := tui.ShowTextInput("Enter a script")
 						gsPackage.Script = script
 
-						if RunScript(home+"/Downloads/"+assetName, gsPackage.Script) {
+						if RunScript(downloadPrefix+assetName, gsPackage.Script) {
 							gsPackage.Platform = runtime.GOOS
 							config.Packages = append(config.Packages, gsPackage)
 						}
@@ -248,7 +259,7 @@ func main() {
 						tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
 					}
 				} else {
-					RunScript(home+"/Downloads/"+assetName, gsPackage.Script)
+					RunScript(downloadPrefix+assetName, gsPackage.Script)
 				}
 			} else {
 				stopAssetSpn("fail")
