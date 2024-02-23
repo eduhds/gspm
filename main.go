@@ -118,7 +118,17 @@ func main() {
 		for _, item := range platformPackages {
 			tui.ShowInfo("Installing package: " + item.Name)
 			assetName := AssetNameFromUrl(item.AssetUrl)
-			RunScript(downloadPrefix+assetName, item.Script)
+
+			stopInstallSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
+
+			success := gitservice.GetGitHubReleaseAsset(assetName, item.AssetUrl)
+
+			if success {
+				stopInstallSpn("success")
+				RunScript(downloadPrefix+assetName, item.Script)
+			} else {
+				stopInstallSpn("fail")
+			}
 		}
 	} else if args.Command == "list" {
 		if countPackages == 0 {
