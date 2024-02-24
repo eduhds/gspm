@@ -142,7 +142,7 @@ func main() {
 		for _, item := range platformPackages {
 			tui.ShowMessage("📦 " + item.Name + "@" + item.Tag)
 			tui.ShowMessage("🔗 " + item.AssetUrl)
-			tui.ShowMessage("🛠️ " + item.Script)
+			tui.ShowMessage("🛠️  " + item.Script)
 			tui.ShowLine()
 		}
 	} else if args.Command == "add" {
