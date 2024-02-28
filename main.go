@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"runtime"
 	"strings"
 
@@ -31,8 +32,28 @@ var args struct {
 	Values  []string `arg:"positional"`
 }
 
-var home = os.Getenv("HOME")
-var configFile = home + "/.config/gspm.json"
+func CreateDirIfNotExists(dir string) {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		os.Mkdir(dir, 0755)
+	}
+}
+
+func GetHomeDir() string {
+	u, _ := user.Current()
+	return u.HomeDir
+}
+
+func GetDownloadsDir() string {
+	directory := GetHomeDir() + "/Downloads"
+	CreateDirIfNotExists(directory)
+	return directory
+}
+
+func GetConfigDir() string {
+	directory := GetHomeDir() + "/.config"
+	CreateDirIfNotExists(directory)
+	return directory
+}
 
 func RunScript(assetPath string, providedScript string) bool {
 	script := "ASSET_PATH=" + assetPath + "\n" + providedScript
@@ -60,7 +81,7 @@ func RunScript(assetPath string, providedScript string) bool {
 func ReadConfig() GSConfig {
 	var config GSConfig
 
-	configFile, err := os.ReadFile(configFile)
+	configFile, err := os.ReadFile(GetConfigDir() + "/gspm.json")
 
 	if err != nil {
 		tui.ShowWarning("Config file not found: " + err.Error())
@@ -77,7 +98,7 @@ func ReadConfig() GSConfig {
 func WriteConfig(config GSConfig) {
 	configBytes, _ := json.MarshalIndent(config, "", "    ")
 
-	err := os.WriteFile(configFile, configBytes, 0644)
+	err := os.WriteFile(GetConfigDir()+"/gspm.json", configBytes, 0644)
 
 	if err != nil {
 		tui.ShowWarning("Cannot to write config file: " + err.Error())
@@ -106,7 +127,7 @@ func main() {
 	config := ReadConfig()
 	platformPackages := PlatformPackages(config)
 	countPackages := len(platformPackages)
-	downloadPrefix := home + "/Downloads/"
+	downloadPrefix := GetDownloadsDir()
 
 	if args.Command == "install" {
 		if countPackages == 0 {
@@ -125,7 +146,7 @@ func main() {
 
 			if success {
 				stopInstallSpn("success")
-				RunScript(downloadPrefix+assetName, item.Script)
+				RunScript(downloadPrefix+"/"+assetName, item.Script)
 			} else {
 				stopInstallSpn("fail")
 			}
@@ -145,6 +166,8 @@ func main() {
 			tui.ShowMessage("🛠️  " + item.Script)
 			tui.ShowLine()
 		}
+	} else if args.Command == "update" {
+		// TODO:
 	} else if args.Command == "add" {
 		if len(args.Values) == 0 {
 			tui.ShowError("No packages provided")
@@ -260,16 +283,16 @@ func main() {
 						script := tui.ShowTextInput("Enter a script")
 						gsPackage.Script = script
 
-						if RunScript(downloadPrefix+assetName, gsPackage.Script) {
+						if RunScript(downloadPrefix+"/"+assetName, gsPackage.Script) {
 							gsPackage.Platform = runtime.GOOS
 							config.Packages = append(config.Packages, gsPackage)
 						}
 					} else {
 						tui.ShowInfo("Script not provided.")
-						tui.ShowSuccess("Package located at ~/Downloads/" + assetName)
+						tui.ShowSuccess("Package located at " + downloadPrefix + "/" + assetName)
 					}
 				} else {
-					RunScript(downloadPrefix+assetName, gsPackage.Script)
+					RunScript(downloadPrefix+"/"+assetName, gsPackage.Script)
 				}
 			} else {
 				stopAssetSpn("fail")
