@@ -166,9 +166,7 @@ func main() {
 			tui.ShowMessage("🛠️  " + item.Script)
 			tui.ShowLine()
 		}
-	} else if args.Command == "update" {
-		// TODO:
-	} else if args.Command == "add" {
+	} else if args.Command == "add" || args.Command == "update" {
 		if len(args.Values) == 0 {
 			tui.ShowError("No packages provided")
 			return
@@ -189,6 +187,10 @@ func main() {
 
 			if len(packageInfo) > 1 {
 				packageTag = packageInfo[1]
+			}
+
+			if args.Command == "update" {
+				packageTag = "latest"
 			}
 
 			var gsPackage GSPackage
