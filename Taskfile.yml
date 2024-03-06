@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - mkdir -p build
+      - go build -o build/gspm .
