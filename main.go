@@ -32,6 +32,8 @@ var args struct {
 	Values  []string `arg:"positional"`
 }
 
+var downloadPrefix = GetDownloadsDir()
+
 func CreateDirIfNotExists(dir string) {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		os.Mkdir(dir, 0755)
@@ -55,14 +57,15 @@ func GetConfigDir() string {
 	return directory
 }
 
-func RunScript(assetPath string, providedScript string) bool {
+func RunScript(assetName string, providedScript string) bool {
+	assetPath := downloadPrefix + "/" + assetName
 	script := "ASSET_PATH=" + assetPath + "\n" + providedScript
 
 	stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
 	tui.ShowBox(script)
 
-	out, err := exec.Command("bash", "-c", script).Output()
+	out, err := exec.Command("/bin/sh", "-c", script).Output()
 
 	if err != nil {
 		stopScriptSpn("fail")
@@ -127,7 +130,6 @@ func main() {
 	config := ReadConfig()
 	platformPackages := PlatformPackages(config)
 	countPackages := len(platformPackages)
-	downloadPrefix := GetDownloadsDir()
 
 	if args.Command == "install" {
 		if countPackages == 0 {
@@ -146,7 +148,7 @@ func main() {
 
 			if success {
 				stopInstallSpn("success")
-				RunScript(downloadPrefix+"/"+assetName, item.Script)
+				RunScript(assetName, item.Script)
 			} else {
 				stopInstallSpn("fail")
 			}
@@ -157,7 +159,7 @@ func main() {
 			return
 		}
 
-		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
+		tui.ShowInfo(fmt.Sprintf("%d packages for %s", countPackages, runtime.GOOS))
 		tui.ShowLine()
 
 		for _, item := range platformPackages {
@@ -172,10 +174,10 @@ func main() {
 			return
 		}
 
-		tui.ShowInfo("Adding packages...")
-
-		for _, value := range args.Values {
-			tui.ShowLine()
+		for index, value := range args.Values {
+			if index > 0 {
+				tui.ShowLine()
+			}
 			packageInfo := strings.Split(value, "@")
 			packageName := packageInfo[0]
 			packageTag := ""
@@ -197,18 +199,24 @@ func main() {
 			gsPackage.Name = packageName
 			gsPackage.Tag = packageTag
 
-			if gsPackage.Tag != "latest" {
-				for _, configPackage := range platformPackages {
-					if configPackage.Name == gsPackage.Name {
-						if gsPackage.Tag == "" || configPackage.Tag == gsPackage.Tag {
-							gsPackage = configPackage
+			var assetName = ""
+
+			for _, configPackage := range platformPackages {
+				if configPackage.Name == gsPackage.Name {
+					if args.Command == "update" {
+						assetName = AssetNameFromUrl(configPackage.AssetUrl)
+					} else {
+						if gsPackage.Tag != "latest" {
+							if gsPackage.Tag == "" || configPackage.Tag == gsPackage.Tag {
+								gsPackage.AssetUrl = configPackage.AssetUrl
+							}
 						}
-						break
 					}
+					gsPackage.Script = configPackage.Script
+					gsPackage.Platform = configPackage.Platform
+					break
 				}
 			}
-
-			var assetName = ""
 
 			if gsPackage.AssetUrl == "" {
 				stopReleasesSpn := tui.ShowSpinner(fmt.Sprintf("Fetching %s releases...", gsPackage.Name))
@@ -255,15 +263,20 @@ func main() {
 				}
 
 				for _, asset := range assets[tag] {
+					if assetName == asset.Name {
+						gsPackage.AssetUrl = asset.BrowserDownloadUrl
+						break
+					}
 					assetOptions = append(assetOptions, asset.Name)
 				}
 
-				assetName = tui.ShowOptions("Select an asset", assetOptions)
-
-				for _, asset := range assets[tag] {
-					if asset.Name == assetName {
-						gsPackage.AssetUrl = asset.BrowserDownloadUrl
-						break
+				if gsPackage.AssetUrl == "" {
+					assetName = tui.ShowOptions("Select an asset", assetOptions)
+					for _, asset := range assets[tag] {
+						if asset.Name == assetName {
+							gsPackage.AssetUrl = asset.BrowserDownloadUrl
+							break
+						}
 					}
 				}
 			} else {
@@ -281,20 +294,38 @@ func main() {
 					runScript := tui.ShowConfirm("Do you want to run a script?")
 
 					if runScript {
-						tui.ShowInfo("Tip: Use $ASSET_PATH to reference the asset path")
+						tui.ShowInfo("Use $ASSET_PATH to reference the asset path")
 						script := tui.ShowTextInput("Enter a script")
 						gsPackage.Script = script
 
-						if RunScript(downloadPrefix+"/"+assetName, gsPackage.Script) {
+						if RunScript(assetName, gsPackage.Script) {
 							gsPackage.Platform = runtime.GOOS
-							config.Packages = append(config.Packages, gsPackage)
+							if args.Command == "update" {
+								for index, configPackage := range config.Packages {
+									if configPackage.Name == gsPackage.Name {
+										config.Packages[index] = gsPackage
+										break
+									}
+								}
+							} else {
+								config.Packages = append(config.Packages, gsPackage)
+							}
 						}
 					} else {
 						tui.ShowInfo("Script not provided.")
 						tui.ShowSuccess("Package located at " + downloadPrefix + "/" + assetName)
 					}
 				} else {
-					RunScript(downloadPrefix+"/"+assetName, gsPackage.Script)
+					if RunScript(assetName, gsPackage.Script) {
+						if args.Command == "update" {
+							for index, configPackage := range config.Packages {
+								if configPackage.Name == gsPackage.Name {
+									config.Packages[index] = gsPackage
+									break
+								}
+							}
+						}
+					}
 				}
 			} else {
 				stopAssetSpn("fail")
