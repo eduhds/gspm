@@ -59,7 +59,7 @@ func GetConfigDir() string {
 
 func RunScript(assetName string, providedScript string) bool {
 	assetPath := downloadPrefix + "/" + assetName
-	script := "ASSET_PATH=" + assetPath + "\n" + providedScript
+	script := "ASSET=" + assetPath + "\n" + providedScript
 
 	stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
@@ -294,8 +294,8 @@ func main() {
 					runScript := tui.ShowConfirm("Do you want to run a script?")
 
 					if runScript {
-						tui.ShowInfo("Use $ASSET_PATH to reference the asset path")
-						script := tui.ShowTextInput("Enter a script")
+						tui.ShowInfo("Use $ASSET to reference the asset path")
+						script := tui.ShowTextInput("Enter a script", true)
 						gsPackage.Script = script
 
 						if RunScript(assetName, gsPackage.Script) {
