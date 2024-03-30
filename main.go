@@ -342,7 +342,7 @@ func main() {
 		var keepedPackages []GSPackage
 
 		for _, item := range config.Packages {
-			if item.Platform == runtime.GOOS || item.Name == args.Values[0] {
+			if item.Platform == runtime.GOOS && item.Name == args.Values[0] {
 				tui.ShowInfo("Package " + item.Name + " removed")
 			} else {
 				keepedPackages = append(keepedPackages, item)
