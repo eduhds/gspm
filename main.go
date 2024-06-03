@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+  "path/filepath"
 	"runtime"
 	"strings"
 
@@ -46,19 +47,19 @@ func GetHomeDir() string {
 }
 
 func GetDownloadsDir() string {
-	directory := GetHomeDir() + "/Downloads"
+	directory := filepath.Join(GetHomeDir(), "Downloads")
 	CreateDirIfNotExists(directory)
 	return directory
 }
 
 func GetConfigDir() string {
-	directory := GetHomeDir() + "/.config"
+	directory := filepath.Join(GetHomeDir(), ".config")
 	CreateDirIfNotExists(directory)
 	return directory
 }
 
 func RunScript(assetName string, providedScript string) bool {
-	assetPath := downloadPrefix + "/" + assetName
+	assetPath := filepath.Join(downloadPrefix, assetName)
 	script := "ASSET=" + assetPath + "\n" + providedScript
 
 	stopScriptSpn := tui.ShowSpinner("Running provided script...")
@@ -84,7 +85,7 @@ func RunScript(assetName string, providedScript string) bool {
 func ReadConfig() GSConfig {
 	var config GSConfig
 
-	configFile, err := os.ReadFile(GetConfigDir() + "/gspm.json")
+	configFile, err := os.ReadFile(filepath.Join(GetConfigDir(), "gspm.json"))
 
 	if err != nil {
 		tui.ShowWarning("Config file not found: " + err.Error())
@@ -101,7 +102,7 @@ func ReadConfig() GSConfig {
 func WriteConfig(config GSConfig) {
 	configBytes, _ := json.MarshalIndent(config, "", "    ")
 
-	err := os.WriteFile(GetConfigDir()+"/gspm.json", configBytes, 0644)
+	err := os.WriteFile(filepath.Join(GetConfigDir(), "gspm.json"), configBytes, 0644)
 
 	if err != nil {
 		tui.ShowWarning("Cannot to write config file: " + err.Error())
@@ -313,7 +314,7 @@ func main() {
 						}
 					} else {
 						tui.ShowInfo("Script not provided.")
-						tui.ShowSuccess("Package located at " + downloadPrefix + "/" + assetName)
+						tui.ShowSuccess("Package located at " + filepath.Join(downloadPrefix, assetName))
 					}
 				} else {
 					if RunScript(assetName, gsPackage.Script) {
