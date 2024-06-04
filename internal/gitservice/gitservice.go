@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -48,9 +49,9 @@ func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 }
 
 func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) bool {
-	downloadsDir := os.Getenv("HOME") + "/Downloads/"
+	outputFile := filepath.Join(os.Getenv("HOME"), "Downloads", assetName)
 
-	_, err := client.R().SetOutputFile(downloadsDir + assetName).
+	_, err := client.R().SetOutputFile(outputFile).
 		Get(assetDownloadUrl)
 
 	if err != nil {
