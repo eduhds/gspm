@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"github.com/alexflint/go-arg"
 	"github.com/eduhds/gspm/internal/gitservice"
 	"github.com/eduhds/gspm/internal/tui"
+	"github.com/eduhds/gspm/internal/util"
 )
 
 type GSPackage struct {
@@ -41,19 +41,14 @@ func CreateDirIfNotExists(dir string) {
 	}
 }
 
-func GetHomeDir() string {
-	u, _ := user.Current()
-	return u.HomeDir
-}
-
 func GetDownloadsDir() string {
-	directory := filepath.Join(GetHomeDir(), "Downloads")
+	directory := filepath.Join(util.GetHomeDir(), "Downloads")
 	CreateDirIfNotExists(directory)
 	return directory
 }
 
 func GetConfigDir() string {
-	directory := filepath.Join(GetHomeDir(), ".config")
+	directory := filepath.Join(util.GetHomeDir(), ".config")
 	CreateDirIfNotExists(directory)
 	return directory
 }

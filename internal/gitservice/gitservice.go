@@ -3,11 +3,11 @@ package gitservice
 import (
 	"errors"
 	"fmt"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"github.com/eduhds/gspm/internal/util"
 	"github.com/imroc/req/v3"
 )
 
@@ -49,7 +49,7 @@ func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 }
 
 func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) bool {
-	outputFile := filepath.Join(os.Getenv("HOME"), "Downloads", assetName)
+	outputFile := filepath.Join(util.GetHomeDir(), "Downloads", assetName)
 
 	_, err := client.R().SetOutputFile(outputFile).
 		Get(assetDownloadUrl)
