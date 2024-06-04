@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
-  "path/filepath"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -66,7 +66,12 @@ func RunScript(assetName string, providedScript string) bool {
 
 	tui.ShowBox(script)
 
-	out, err := exec.Command("/bin/sh", "-c", script).Output()
+	program := "/bin/sh"
+	if runtime.GOOS == "windows" {
+		program = "cmd.exe"
+	}
+
+	out, err := exec.Command(program, "-c", script).Output()
 
 	if err != nil {
 		stopScriptSpn("fail")
