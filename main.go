@@ -60,7 +60,13 @@ func GetConfigDir() string {
 
 func RunScript(assetName string, providedScript string) bool {
 	assetPath := filepath.Join(downloadPrefix, assetName)
-	script := "ASSET=" + assetPath + "\n" + providedScript
+
+	assetPathVariable := "ASSET=" + assetPath
+	if runtime.GOOS == "windows" {
+		assetPathVariable = "set ASSET=" + assetPath
+	}
+
+	script := assetPathVariable + "\n" + providedScript
 
 	stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
