@@ -66,12 +66,15 @@ func RunScript(assetName string, providedScript string) bool {
 
 	tui.ShowBox(script)
 
-	program := "/bin/sh"
+	execCommand := "/bin/sh"
+	execOption := "-c"
+
 	if runtime.GOOS == "windows" {
-		program = "cmd.exe"
+		execCommand = "cmd.exe"
+		execOption = "/C"
 	}
 
-	out, err := exec.Command(program, "-c", script).Output()
+	out, err := exec.Command(execCommand, execOption, script).Output()
 
 	if err != nil {
 		stopScriptSpn("fail")
