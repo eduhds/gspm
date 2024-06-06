@@ -4,3 +4,8 @@ includes:
   build: ./Taskfile_{{OS}}.yml
 
   test-install: ./Taskfile_{{OS}}.yml
+
+tasks:
+  build:
+    cmds:
+      - echo 'building...'
