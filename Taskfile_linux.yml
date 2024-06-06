@@ -1,13 +1,13 @@
 version: '3'
 
 tasks:
-  build:
+  release:
     cmds:
       - mkdir -p build
-      - rm build/*
+      - rm build/* 2> /dev/null || true
       - go build -o build/gspm .
-      - tar -C build -czvf build/gspm-$(go env GOOS)-$(go env GOARCH).tar.gz gspm
+      - tar -C build -czf build/gspm-$(go env GOOS)-$(go env GOARCH).tar.gz gspm
 
-  test-install:
+  install:
     cmds:
       - sudo cp build/gspm /usr/local/bin

@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  build:
+  release:
     cmds:
       - md build 2>nul
       - del /q "build/*"
