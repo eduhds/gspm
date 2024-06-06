@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - md build 2>nul
+      - del /q "build/*"
+      - go build -o build/gspm .
+      - cd build && tar.exe -a -c -f gspm-$(go env GOOS)-$(go env GOARCH).zip gspm
