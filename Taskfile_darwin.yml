@@ -5,8 +5,8 @@ tasks:
     cmds:
       - mkdir -p build
       - rm build/* 2> /dev/null || true
-      - go build -o build/gspm .
-      - tar -C build -czf build/gspm-$(go env GOOS)-$(go env GOARCH).tar.gz gspm
+      - pkgx go build -o build/gspm .
+      - tar -C build -czf build/gspm-$(pkgx go env GOOS)-$(pkgx go env GOARCH).tar.gz gspm
 
   install:
     cmds:
