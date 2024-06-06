@@ -387,7 +387,7 @@ func main() {
 			gsPackage.Script = script
 
 			for index, configPackage := range config.Packages {
-				if configPackage.Name == gsPackage.Name {
+				if configPackage.Platform == runtime.GOOS && configPackage.Name == gsPackage.Name {
 					config.Packages[index] = gsPackage
 					break
 				}
