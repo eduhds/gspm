@@ -6,7 +6,9 @@ Git Services Package Manager
 
 Support installing from releases with custom script.
 
-> Working in progress!
+> Work in progress!
+
+## Usage
 
 ```sh
 # Add
@@ -22,4 +24,24 @@ gspm install
 
 # List
 gspm list
+
+# Edit
+gspm edit username/repository
 ```
+
+## Development
+
+```sh
+# Run
+go run . <command> <arguments>
+
+# Build 
+task build
+```
+
+## Credits
+
+- [alexflint/go-arg](https://github.com/alexflint/go-arg)
+- [imroc/req](https://github.com/imroc/req)
+- [pterm/pterm](https://github.com/pterm/pterm)
+- [go-task/task](https://github.com/go-task/task)
