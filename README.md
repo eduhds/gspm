@@ -11,6 +11,10 @@ Support installing from releases with custom script.
 
 > Work in progress!
 
+## Install
+
+Download from [releases](https://github.com/eduhds/gspm/releases).
+
 ## Usage
 
 ```sh
