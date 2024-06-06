@@ -1,6 +1,9 @@
 # gspm
 
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
 
 Git Services Package Manager
 
@@ -36,7 +39,7 @@ gspm edit username/repository
 go run . <command> <arguments>
 
 # Build 
-task build
+task build:release
 ```
 
 ## Credits
