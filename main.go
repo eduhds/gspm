@@ -28,6 +28,8 @@ type GSConfig struct {
 	Packages []GSPackage
 }
 
+const version = "0.0.1"
+
 var args struct {
 	Command string   `arg:"positional"`
 	Values  []string `arg:"positional"`
@@ -131,6 +133,8 @@ func AssetNameFromUrl(url string) string {
 
 func main() {
 	arg.MustParse(&args)
+
+	tui.ShowInfo(fmt.Sprintf("gspm v%s", version))
 
 	config := ReadConfig()
 	platformPackages := PlatformPackages(config)
