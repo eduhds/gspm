@@ -5,3 +5,4 @@ tasks:
     cmds:
       - mkdir -p build
       - go build -o build/gspm .
+      - tar -C build -czvf build/gspm-$(go env GOOS)-$(go env GOARCH).tar.gz gspm
