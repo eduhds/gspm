@@ -46,16 +46,18 @@ func ShowSpinner(message string) func(string) {
 	}
 }
 
-func ShowTextInput(message string, multiline bool) string {
+func ShowTextInput(message string, multiline bool, defaultValue string) string {
 	if multiline {
 		input, _ := pterm.DefaultInteractiveTextInput.
 			WithDefaultText(message).
+			WithDefaultValue(defaultValue).
 			WithMultiLine().
 			Show()
 		return input
 	} else {
 		input, _ := pterm.DefaultInteractiveTextInput.
 			WithDefaultText(message).
+			WithDefaultValue(defaultValue).
 			Show()
 		return input
 	}

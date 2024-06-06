@@ -56,12 +56,7 @@ func GetConfigDir() string {
 func RunScript(assetName string, providedScript string) bool {
 	assetPath := filepath.Join(downloadPrefix, assetName)
 
-	assetPathVariable := "ASSET=" + assetPath
-	if runtime.GOOS == "windows" {
-		assetPathVariable = "set ASSET=" + assetPath
-	}
-
-	script := assetPathVariable + "\n" + providedScript
+	script := strings.ReplaceAll(providedScript, "{{ASSET}}", assetPath)
 
 	stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
@@ -304,8 +299,8 @@ func main() {
 					runScript := tui.ShowConfirm("Do you want to run a script?")
 
 					if runScript {
-						tui.ShowInfo("Use $ASSET to reference the asset path")
-						script := tui.ShowTextInput("Enter a script", true)
+						tui.ShowInfo("Use {{ASSET}} to reference the asset path")
+						script := tui.ShowTextInput("Enter a script", true, "")
 						gsPackage.Script = script
 
 						if RunScript(assetName, gsPackage.Script) {
@@ -360,6 +355,40 @@ func main() {
 		}
 
 		config.Packages = keepedPackages
+
+		WriteConfig(config)
+	} else if args.Command == "edit" {
+		if countPackages == 0 {
+			tui.ShowInfo("No package found")
+			return
+		}
+
+		for index, value := range args.Values {
+			if index > 0 {
+				tui.ShowLine()
+			}
+			packageName := value
+
+			var gsPackage GSPackage
+
+			for _, configPackage := range platformPackages {
+				if configPackage.Name == packageName {
+					gsPackage = configPackage
+					break
+				}
+			}
+
+			tui.ShowInfo("Use {{ASSET}} to reference the asset path")
+			script := tui.ShowTextInput("Enter a script", true, gsPackage.Script)
+			gsPackage.Script = script
+
+			for index, configPackage := range config.Packages {
+				if configPackage.Name == gsPackage.Name {
+					config.Packages[index] = gsPackage
+					break
+				}
+			}
+		}
 
 		WriteConfig(config)
 	} else {
