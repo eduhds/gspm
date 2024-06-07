@@ -28,7 +28,7 @@ type GSConfig struct {
 	Packages []GSPackage
 }
 
-const version = "0.0.1"
+const version = "0.0.2"
 
 var args struct {
 	Command string   `arg:"positional"`
@@ -37,21 +37,15 @@ var args struct {
 
 var downloadPrefix = GetDownloadsDir()
 
-func CreateDirIfNotExists(dir string) {
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		os.Mkdir(dir, 0755)
-	}
-}
-
 func GetDownloadsDir() string {
 	directory := filepath.Join(util.GetHomeDir(), "Downloads")
-	CreateDirIfNotExists(directory)
+	util.CreateDirIfNotExists(directory)
 	return directory
 }
 
 func GetConfigDir() string {
 	directory := filepath.Join(util.GetHomeDir(), ".config")
-	CreateDirIfNotExists(directory)
+	util.CreateDirIfNotExists(directory)
 	return directory
 }
 
@@ -311,7 +305,7 @@ func main() {
 							gsPackage.Platform = runtime.GOOS
 							if args.Command == "update" {
 								for index, configPackage := range config.Packages {
-									if configPackage.Name == gsPackage.Name {
+									if configPackage.Platform == runtime.GOOS && configPackage.Name == gsPackage.Name {
 										config.Packages[index] = gsPackage
 										break
 									}
@@ -328,7 +322,7 @@ func main() {
 					if RunScript(assetName, gsPackage.Script) {
 						if args.Command == "update" {
 							for index, configPackage := range config.Packages {
-								if configPackage.Name == gsPackage.Name {
+								if configPackage.Platform == runtime.GOOS && configPackage.Name == gsPackage.Name {
 									config.Packages[index] = gsPackage
 									break
 								}
@@ -363,7 +357,7 @@ func main() {
 		WriteConfig(config)
 	} else if args.Command == "edit" {
 		if countPackages == 0 {
-			tui.ShowInfo("No package found")
+			tui.ShowInfo("No packages found")
 			return
 		}
 
@@ -381,6 +375,8 @@ func main() {
 					break
 				}
 			}
+
+			tui.ShowWarning("Editing script for package " + gsPackage.Name)
 
 			tui.ShowInfo("Use {{ASSET}} to reference the asset path")
 			script := tui.ShowTextInput("Enter a script", true, gsPackage.Script)
