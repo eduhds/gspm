@@ -56,7 +56,7 @@ func RunScript(assetName string, providedScript string) bool {
 
 	stopScriptSpn := tui.ShowSpinner("Running provided script...")
 
-	tui.ShowBox(script)
+	tui.ShowBox(fmt.Sprintf("ASSET=%s\n%s", assetPath, providedScript))
 
 	execCommand := "/bin/sh"
 	execOption := "-c"
