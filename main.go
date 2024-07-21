@@ -96,6 +96,8 @@ func ReadConfig() GSConfig {
 		}
 	}
 
+	os.WriteFile(filepath.Join(GetConfigDir(), "gspm.json.bkp"), configFile, 0644)
+
 	return config
 }
 
