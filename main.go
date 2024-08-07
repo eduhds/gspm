@@ -54,8 +54,6 @@ func RunScript(assetName string, providedScript string) bool {
 
 	script := strings.ReplaceAll(providedScript, "{{ASSET}}", assetPath)
 
-	stopScriptSpn := tui.ShowSpinner("Running provided script...")
-
 	tui.ShowBox(fmt.Sprintf("ASSET=%s\n%s", assetPath, providedScript))
 
 	execCommand := "/bin/sh"
@@ -69,14 +67,12 @@ func RunScript(assetName string, providedScript string) bool {
 	out, err := exec.Command(execCommand, execOption, script).Output()
 
 	if err != nil {
-		stopScriptSpn("fail")
 		if string(out) != "" {
 			tui.ShowBox(string(out))
 		}
 		tui.ShowError(err.Error())
 		return false
 	} else {
-		stopScriptSpn("success")
 		tui.ShowSuccess("Script executed successfully.")
 		return true
 	}
