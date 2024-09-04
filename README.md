@@ -13,7 +13,11 @@ Support installing from releases with custom script.
 
 ## Install
 
-Download from [releases](https://github.com/eduhds/gspm/releases).
+```sh
+curl -sL https://dub.sh/gspm | bash
+```
+
+Or download manually from [releases](https://github.com/eduhds/gspm/releases).
 
 ## Usage
 
@@ -42,7 +46,7 @@ gspm edit username/repository
 # Run
 go run . <command> <arguments>
 
-# Build 
+# Build
 task build:release
 ```
 
