@@ -28,7 +28,7 @@ type GSConfig struct {
 	Packages []GSPackage
 }
 
-const version = "0.0.3"
+const version = "0.0.4"
 
 var args struct {
 	Command string   `arg:"positional"`

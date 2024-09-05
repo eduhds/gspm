@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=v0.0.3
+version=v0.0.4
 os=$(uname -s)
 arch=amd64
 url=https://github.com/eduhds/gspm/releases/download/$version/gspm-${os,}-$arch.tar.gz
@@ -10,18 +10,18 @@ if command -v curl &> /dev/null; then
 elif command -v wget &> /dev/null; then
     wget -O /tmp/gspm.tar.gz $url
 else
-    echo "Please install curl or wget"
+    echo "Please install curl or wget and try again."
     exit 1
 fi
 
-tar -C /tmp -xzf /tmp/gspm.tar.gz
-
-sudo mv /tmp/gspm /usr/local/bin && \
+tar -C /tmp -xzf /tmp/gspm.tar.gz && \
+    sudo mv /tmp/gspm /usr/local/bin && \
     sudo chmod +x /usr/local/bin/gspm
 
 if [ $? -ne 0 ]; then
-    echo "Install failed"
+    echo "Failed to install gspm."
+    echo "See https://github.com/eduhds/gspm for more information."
     exit 1
 else
-    echo 'Install complete'
+    echo 'gspm installed successfully!'
 fi
