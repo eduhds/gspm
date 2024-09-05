@@ -3,7 +3,7 @@ version: '3'
 tasks:
   release:
     cmds:
-      - md build 2>nul || true
-      - del /q build/* 2>nul || true
+      # - md build 2>nul || true
+      # - del /q build/* 2>nul || true
       - go build -o build/gspm.exe .
       - cd build && tar.exe -a -c -f gspm-$(go env GOOS)-$(go env GOARCH).zip gspm.exe
