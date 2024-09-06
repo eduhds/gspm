@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=gspm
+Exec=gspm
+Icon=gspm
+Type=Application
+Categories=Utility;
+Terminal=true
