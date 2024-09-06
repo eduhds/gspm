@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 version=v0.0.4
 os=$(uname -s)
 arch=amd64
