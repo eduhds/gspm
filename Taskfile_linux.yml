@@ -4,10 +4,10 @@ tasks:
   release:
     cmds:
       - mkdir -p build
-      - rm build/* 2> /dev/null || true
-      - go build -o build/gspm .
+      - rm -rf build/* 2> /dev/null || true
+      - CGO_ENABLED=0 go build -ldflags "-s -w" -o build/gspm .
       - tar -C build -czf build/gspm-$(go env GOOS)-$(go env GOARCH).tar.gz gspm
-
+      - ./scripts/package.sh
   install:
     cmds:
       - sudo cp build/gspm /usr/local/bin
