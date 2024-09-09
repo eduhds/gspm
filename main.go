@@ -30,9 +30,13 @@ type GSConfig struct {
 
 const version = "0.0.4"
 
-var args struct {
+type args struct {
 	Command string   `arg:"positional"`
 	Values  []string `arg:"positional"`
+}
+
+func (args) Version() string {
+  return "v" + version
 }
 
 var downloadPrefix = GetDownloadsDir()
@@ -124,7 +128,8 @@ func AssetNameFromUrl(url string) string {
 }
 
 func main() {
-	arg.MustParse(&args)
+  var args args
+  arg.MustParse(&args)
 
 	tui.ShowInfo(fmt.Sprintf("gspm v%s", version))
 
