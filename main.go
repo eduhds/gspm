@@ -32,8 +32,9 @@ type GSConfig struct {
 }
 
 type args struct {
-	Command string   `arg:"positional, required" help:"Command to run"`
+	Command string   `arg:"positional,required" help:"Command to run. Must be add, remove, update, install, edit or list"`
 	Values  []string `arg:"positional"`
+	Scripts []string `arg:"-s,--script,separate" help:"Script to run"`
 }
 
 func (args) Version() string {
@@ -306,13 +307,16 @@ func main() {
 			if success {
 				stopAssetSpn("success")
 
+				if len(args.Scripts) > 0 && args.Scripts[index] != "" {
+					gsPackage.Script = args.Scripts[index]
+				}
+
 				if gsPackage.Script == "" {
 					runScript := tui.ShowConfirm("Do you want to run a script?")
 
 					if runScript {
 						tui.ShowInfo("Use {{ASSET}} to reference the asset path")
-						script := tui.ShowTextInput("Enter a script", true, "")
-						gsPackage.Script = script
+						gsPackage.Script = tui.ShowTextInput("Enter a script", true, "")
 
 						if RunScript(assetName, gsPackage.Script) {
 							gsPackage.Platform = runtime.GOOS
