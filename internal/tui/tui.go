@@ -78,3 +78,19 @@ func ShowBox(text string) {
 func ShowLine() {
 	pterm.Println()
 }
+
+func TextSuccess(message string) {
+	pterm.Printfln(pterm.Green(message))
+}
+
+func TextError(message string) {
+	pterm.Printfln(pterm.Red(message))
+}
+
+func TextInfo(message string) {
+	pterm.Printfln(pterm.LightBlue(message))
+}
+
+func TextWarning(message string) {
+	pterm.Printfln(pterm.Yellow(message))
+}
