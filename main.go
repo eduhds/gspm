@@ -33,8 +33,8 @@ type GSConfig struct {
 
 type args struct {
 	Command string   `arg:"positional,required" help:"Command to run. Must be add, remove, update, install, edit or list"`
-	Values  []string `arg:"positional"`
-	Scripts []string `arg:"-s,--script,separate" help:"Script to run"`
+	Repos   []string `arg:"positional" help:"Repos from Git Services (GitHub supported only for now). Format: username/repository"`
+	Scripts []string `arg:"-s,--script,separate" help:"Script to run after download a asset. Use {{ASSET}} to reference the asset path."`
 }
 
 func (args) Version() string {
@@ -186,12 +186,12 @@ func main() {
 			tui.ShowLine()
 		}
 	} else if args.Command == "add" || args.Command == "update" {
-		if len(args.Values) == 0 {
+		if len(args.Repos) == 0 {
 			tui.ShowError("No packages provided")
 			return
 		}
 
-		for index, value := range args.Values {
+		for index, value := range args.Repos {
 			if index > 0 {
 				tui.ShowLine()
 			}
@@ -362,7 +362,7 @@ func main() {
 		var keepedPackages []GSPackage
 
 		for _, item := range config.Packages {
-			if item.Platform == runtime.GOOS && item.Name == args.Values[0] {
+			if item.Platform == runtime.GOOS && item.Name == args.Repos[0] {
 				tui.ShowInfo("Package " + item.Name + " removed")
 			} else {
 				keepedPackages = append(keepedPackages, item)
@@ -370,7 +370,7 @@ func main() {
 		}
 
 		if len(keepedPackages) == len(config.Packages) {
-			tui.ShowError("Package not found: " + args.Values[0])
+			tui.ShowError("Package not found: " + args.Repos[0])
 			os.Exit(1)
 		}
 
@@ -383,7 +383,7 @@ func main() {
 			return
 		}
 
-		for index, value := range args.Values {
+		for index, value := range args.Repos {
 			if index > 0 {
 				tui.ShowLine()
 			}
