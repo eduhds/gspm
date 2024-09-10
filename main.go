@@ -17,6 +17,14 @@ import (
 
 const appname = "gspm"
 const version = "0.0.4"
+const description = "Thanks for using gspm, the Git Services Package Manager.\n"
+const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" +
+	"a8\"    `Y88  I8[    \"\"  88P'    \"8a  88P'   \"88\"    \"8a \n" +
+	"8b       88   `\"Y8ba,   88       d8  88      88      88 \n" +
+	"\"8a,   ,d88  aa    ]8I  88b,   ,a8\"  88      88      88 \n" +
+	" `\"YbbdP\"Y8  `\"YbbdP\"'  88`YbbdP\"'   88      88      88 \n" +
+	" aa,    ,88             88                              \n" +
+	"  \"Y8bbdP\"              88                              \n"
 
 type GSPackage struct {
 	Name     string
@@ -32,7 +40,7 @@ type GSConfig struct {
 }
 
 type args struct {
-	Command string   `arg:"positional,required" help:"Command to run. Must be add, remove, update, install, edit or list"`
+	Command string   `arg:"positional,required" help:"Command to run. Must be add, remove, update, install, edit, list or interactive."`
 	Repos   []string `arg:"positional" help:"Repos from Git Services (GitHub supported only for now). Format: username/repository"`
 	Scripts []string `arg:"-s,--script,separate" help:"Script to run after download a asset. Use {{ASSET}} to reference the asset path."`
 }
@@ -42,7 +50,7 @@ func (args) Version() string {
 }
 
 func (args) Description() string {
-	return "Thanks for using gspm, the Git Services Package Manager.\n"
+	return description
 }
 
 func (args) Epilogue() string {
@@ -141,12 +149,44 @@ func main() {
 	var args args
 	arg.MustParse(&args)
 
-	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
-	tui.ShowLine()
-
 	config := ReadConfig()
 	platformPackages := PlatformPackages(config)
 	countPackages := len(platformPackages)
+
+	if args.Command == "interactive" {
+		tui.TextInfo(asciiArt)
+		tui.ShowInfo(fmt.Sprintf("v%s", version))
+		tui.ShowLine()
+
+		quit := false
+
+		for !quit {
+			repo := tui.ShowTextInput("What repository do you want to use? (Format: username/repository)", false, "")
+
+			runScript := tui.ShowConfirm("Do you want to run a script after downloading the asset?")
+
+			if runScript {
+				script := tui.ShowTextInput("What script do you want to run?", true, "")
+				tui.ShowInfo(fmt.Sprintf("Command: %s", script))
+			}
+
+			tui.ShowInfo(fmt.Sprintf("Command: %s", repo))
+
+			tui.ShowLine()
+
+			quit = !tui.ShowConfirm("Continue?")
+
+			if quit {
+				tui.TextSuccess(description)
+				tui.ShowLine()
+			}
+		}
+
+		return
+	}
+
+	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
+	tui.ShowLine()
 
 	if args.Command == "install" {
 		if countPackages == 0 {
