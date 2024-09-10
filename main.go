@@ -15,6 +15,9 @@ import (
 	"github.com/eduhds/gspm/internal/util"
 )
 
+const appname = "gspm"
+const version = "0.0.4"
+
 type GSPackage struct {
 	Name     string
 	Tag      string
@@ -28,15 +31,21 @@ type GSConfig struct {
 	Packages []GSPackage
 }
 
-const version = "0.0.4"
-
 type args struct {
-	Command string   `arg:"positional"`
+	Command string   `arg:"positional, required" help:"Command to run"`
 	Values  []string `arg:"positional"`
 }
 
 func (args) Version() string {
-  return "v" + version
+	return fmt.Sprintf("%s v%s", appname, version)
+}
+
+func (args) Description() string {
+	return "Thanks for using gspm, the Git Services Package Manager.\n"
+}
+
+func (args) Epilogue() string {
+	return "For more information visit https://github.com/eduhds/gspm"
 }
 
 var downloadPrefix = GetDownloadsDir()
@@ -85,7 +94,7 @@ func RunScript(assetName string, providedScript string) bool {
 func ReadConfig() GSConfig {
 	var config GSConfig
 
-	configFile, err := os.ReadFile(filepath.Join(GetConfigDir(), "gspm.json"))
+	configFile, err := os.ReadFile(filepath.Join(GetConfigDir(), fmt.Sprintf("%s.json", appname)))
 
 	if err != nil {
 		tui.ShowWarning("Config file not found: " + err.Error())
@@ -96,7 +105,7 @@ func ReadConfig() GSConfig {
 		}
 	}
 
-	os.WriteFile(filepath.Join(GetConfigDir(), "gspm.json.bkp"), configFile, 0644)
+	os.WriteFile(filepath.Join(GetConfigDir(), fmt.Sprintf("%s.json.bkp", appname)), configFile, 0644)
 
 	return config
 }
@@ -104,7 +113,7 @@ func ReadConfig() GSConfig {
 func WriteConfig(config GSConfig) {
 	configBytes, _ := json.MarshalIndent(config, "", "    ")
 
-	err := os.WriteFile(filepath.Join(GetConfigDir(), "gspm.json"), configBytes, 0644)
+	err := os.WriteFile(filepath.Join(GetConfigDir(), fmt.Sprintf("%s.json", appname)), configBytes, 0644)
 
 	if err != nil {
 		tui.ShowWarning("Cannot to write config file: " + err.Error())
@@ -128,10 +137,11 @@ func AssetNameFromUrl(url string) string {
 }
 
 func main() {
-  var args args
-  arg.MustParse(&args)
+	var args args
+	arg.MustParse(&args)
 
-	tui.ShowInfo(fmt.Sprintf("gspm v%s", version))
+	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
+	tui.ShowLine()
 
 	config := ReadConfig()
 	platformPackages := PlatformPackages(config)
@@ -355,6 +365,11 @@ func main() {
 			}
 		}
 
+		if len(keepedPackages) == len(config.Packages) {
+			tui.ShowError("Package not found: " + args.Values[0])
+			os.Exit(1)
+		}
+
 		config.Packages = keepedPackages
 
 		WriteConfig(config)
@@ -377,6 +392,11 @@ func main() {
 					gsPackage = configPackage
 					break
 				}
+			}
+
+			if gsPackage.Name == "" {
+				tui.ShowError("Package not found: " + packageName)
+				continue
 			}
 
 			tui.ShowWarning("Editing script for package " + gsPackage.Name)
