@@ -78,13 +78,7 @@ func RunScript(assetName string, providedScript string) bool {
 
 	tui.ShowBox(fmt.Sprintf("ASSET=%s\n%s", assetPath, providedScript))
 
-	execCommand := "/bin/sh"
-	execOption := "-c"
-
-	if runtime.GOOS == "windows" {
-		execCommand = "cmd.exe"
-		execOption = "/C"
-	}
+	execCommand, execOption := util.GetShellExec()
 
 	out, err := exec.Command(execCommand, execOption, script).Output()
 
@@ -149,10 +143,6 @@ func main() {
 	var args args
 	arg.MustParse(&args)
 
-	config := ReadConfig()
-	platformPackages := PlatformPackages(config)
-	countPackages := len(platformPackages)
-
 	if args.Command == "interactive" {
 		tui.TextInfo(asciiArt)
 		tui.ShowInfo(fmt.Sprintf("v%s", version))
@@ -161,20 +151,29 @@ func main() {
 		quit := false
 
 		for !quit {
-			repo := tui.ShowTextInput("What repository do you want to use? (Format: username/repository)", false, "")
+			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "list"})
 
-			runScript := tui.ShowConfirm("Do you want to run a script after downloading the asset?")
+			repo := ""
 
-			if runScript {
-				script := tui.ShowTextInput("What script do you want to run?", true, "")
-				tui.ShowInfo(fmt.Sprintf("Command: %s", script))
+			if option != "list" && option != "install" {
+				repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
 			}
 
-			tui.ShowInfo(fmt.Sprintf("Command: %s", repo))
+			execCommand, execOption := util.GetShellExec()
+
+			cmd := exec.Command(execCommand, execOption, fmt.Sprintf("%s %s %s", os.Args[0], option, repo))
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+
+			err := cmd.Run()
+
+			if err != nil {
+				tui.ShowError(err.Error())
+			}
 
 			tui.ShowLine()
-
-			quit = !tui.ShowConfirm("Continue?")
+			quit = !tui.ShowConfirm("Continue to another command?")
 
 			if quit {
 				tui.TextSuccess(description)
@@ -187,6 +186,10 @@ func main() {
 
 	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
 	tui.ShowLine()
+
+	config := ReadConfig()
+	platformPackages := PlatformPackages(config)
+	countPackages := len(platformPackages)
 
 	if args.Command == "install" {
 		if countPackages == 0 {
