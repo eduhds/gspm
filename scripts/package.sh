@@ -2,30 +2,35 @@
 
 set -e
 
+appname=gspm
 version=0.0.4
-output=gspm-$(go env GOOS)-$(go env GOARCH)
+os=$(go env GOOS)
+arch=$(go env GOARCH)
+output=$appname-$os-$arch
 
-rm -rf build/AppDir 2> /dev/null
-mkdir build/AppDir
+rm -rf $os/{AppDir,dist} 2> /dev/null
+mkdir $os/{AppDir,dist}
 
 cmd="LINUXDEPLOY_OUTPUT_APP_NAME=$output LINUXDEPLOY_OUTPUT_VERSION=$version linuxdeploy \
-    --appdir build/AppDir \
-    --executable build/gspm \
-    --icon-file linux/gspm.png \
-    --desktop-file linux/gspm.desktop \
+    --appdir $os/AppDir \
+    --executable build/$os/$arch/$appname \
+    --icon-file $os/$appname.png \
+    --desktop-file $os/$appname.desktop \
 "
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-appimage \
     bash -c "$cmd --output appimage"
 
-mv *.AppImage build
+mv *.AppImage $os/dist
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-rpm \
     bash -c "LDNP_BUILD=rpm $cmd --output native_packages"
 
-mv *.rpm build
+mv *.rpm $os/dist
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-deb \
     bash -c "LDNP_BUILD=deb $cmd --output native_packages"
 
-mv *.deb build
+mv *.deb $os/dist
+
+tar -C build/$os/$arch -czf $os/dist/$appname-$os-$arch.tar.gz $appname

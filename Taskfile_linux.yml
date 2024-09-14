@@ -2,11 +2,18 @@ version: '3'
 
 tasks:
   release:
+    vars:
+      APP: gspm
+      PLATFORM:
+        sh: echo $(go env GOOS)
+      ARCH:
+        sh: echo $(go env GOARCH)
+      OUTPUT_DIR: '{{.PLATFORM}}/{{.ARCH}}'
     cmds:
       - mkdir -p build
       - rm -rf build/* 2> /dev/null || true
-      - CGO_ENABLED=0 go build -ldflags "-s -w" -o build/gspm .
-      - tar -C build -czf build/gspm-$(go env GOOS)-$(go env GOARCH).tar.gz gspm
+      - mkdir build/{{.PLATFORM}} && mkdir build/{{.PLATFORM}}/{{.ARCH}}
+      - CGO_ENABLED=0 go build -ldflags "-s -w" -o build/{{.OUTPUT_DIR}}/{{.APP}} .
       - ./scripts/package.sh
   install:
     cmds:
