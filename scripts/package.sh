@@ -14,9 +14,15 @@ mkdir $os/{AppDir,dist}
 cmd="LINUXDEPLOY_OUTPUT_APP_NAME=$output LINUXDEPLOY_OUTPUT_VERSION=$version linuxdeploy \
     --appdir $os/AppDir \
     --executable build/$os/$arch/$appname \
-    --icon-file $os/$appname.png \
     --desktop-file $os/$appname.desktop \
 "
+
+sizes=(16 32 64 96 128 256)
+
+for size in "${sizes[@]}"; do
+    cmd="$cmd --icon-file $os/icons/${size}x${size}/$appname.png \
+"
+done
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-appimage \
     bash -c "$cmd --output appimage"
