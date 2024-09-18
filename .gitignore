@@ -7,3 +7,5 @@ AppDir
 .envrc
 
 task.exe
+
+*.syso

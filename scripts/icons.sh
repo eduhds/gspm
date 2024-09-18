@@ -30,4 +30,15 @@ else
         mkdir -p linux/icons/${size}x${size}
         ffmpeg -i gspm-1024x1024.png -vf scale=${size}:${size} linux/icons/${size}x${size}/gspm.png
     done
+
+    # Windows
+    mkdir -p windows/icons
+
+    sizes=(256)
+
+    for size in "${sizes[@]}"; do
+        ffmpeg -i gspm-1024x1024.png -vf scale=${size}:${size} windows/icons/icon-${size}.png
+    done
+
+    ffmpeg -i windows/icons/icon-256.png windows/icons/icon.ico
 fi
