@@ -13,7 +13,7 @@ mkdir $os/{AppDir,dist}
 
 cmd="LINUXDEPLOY_OUTPUT_APP_NAME=$output LINUXDEPLOY_OUTPUT_VERSION=$version linuxdeploy \
     --appdir $os/AppDir \
-    --executable build/$os/$arch/$appname \
+    --executable build/$os/$arch/release/$appname \
     --desktop-file $os/$appname.desktop \
 "
 

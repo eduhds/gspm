@@ -10,10 +10,11 @@ tasks:
         sh: echo $(go env GOARCH)
       OUTPUT_DIR: '{{.PLATFORM}}/{{.ARCH}}'
     cmds:
+      - ./scripts/icons.sh
       - mkdir -p build
       - rm -rf build/* 2> /dev/null || true
-      - mkdir build/{{.PLATFORM}} && mkdir build/{{.PLATFORM}}/{{.ARCH}}
-      - CGO_ENABLED=0 go build -ldflags "-s -w" -o build/{{.OUTPUT_DIR}}/{{.APP}} .
+      - mkdir build/{{.PLATFORM}} && mkdir build/{{.PLATFORM}}/{{.ARCH}} && mkdir build/{{.PLATFORM}}/{{.ARCH}}/release
+      - CGO_ENABLED=0 go build -ldflags "-s -w" -o build/{{.OUTPUT_DIR}}/release/{{.APP}} .
       - ./scripts/package.sh
   install:
     cmds:

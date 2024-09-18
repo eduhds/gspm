@@ -2,12 +2,20 @@ version: '3'
 
 tasks:
   release:
+    vars:
+      APP: gspm
+      PLATFORM:
+        sh: echo $(pkgx go env GOOS)
+      ARCH:
+        sh: echo $(pkgx go env GOARCH)
+      OUTPUT_DIR: '{{.PLATFORM}}/{{.ARCH}}'
     cmds:
+      - ./scripts/icons.sh
       - mkdir -p build
-      - rm build/* 2> /dev/null || true
-      - pkgx go build -o build/gspm .
-      - tar -C build -czf build/gspm-$(pkgx go env GOOS)-$(pkgx go env GOARCH).tar.gz gspm
-
+      - rm -rf build/* 2> /dev/null || true
+      - mkdir build/{{.PLATFORM}} && mkdir build/{{.PLATFORM}}/{{.ARCH}} && mkdir build/{{.PLATFORM}}/{{.ARCH}}/release
+      - CGO_ENABLED=0 pkgx go build -ldflags "-s -w" -o build/{{.OUTPUT_DIR}}/release/{{.APP}} .
+      - ./scripts/bundle.sh
   install:
     cmds:
       - sudo cp build/gspm /usr/local/bin
