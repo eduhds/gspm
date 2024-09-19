@@ -65,9 +65,7 @@ echo 'APPL?????' > macos/$bundle/Contents/PkgInfo
 cat << EOF > macos/$bundle/Contents/MacOS/$executable
 #!/bin/bash
 EXECUTABLE=\$(dirname "\$0")/$appname
-echo "\$EXECUTABLE interactive" > /tmp/$appname.sh
-chmod +x /tmp/$appname.sh;
-open -a Terminal /tmp/$appname.sh
+open -a Terminal --args "\$EXECUTABLE \$@"
 EOF
 
 chmod +x macos/$bundle/Contents/MacOS/$executable

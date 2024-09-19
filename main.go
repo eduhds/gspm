@@ -40,7 +40,7 @@ type GSConfig struct {
 }
 
 type args struct {
-	Command string   `arg:"positional,required" help:"Command to run. Must be add, remove, update, install, edit, list or interactive."`
+	Command string   `arg:"positional" help:"Command to run. Must be add, remove, update, install, edit, or list."`
 	Repos   []string `arg:"positional" help:"Repos from Git Services (GitHub supported only for now). Format: username/repository"`
 	Scripts []string `arg:"-s,--script,separate" help:"Script to run after download a asset. Use {{ASSET}} to reference the asset path."`
 }
@@ -143,7 +143,8 @@ func main() {
 	var args args
 	arg.MustParse(&args)
 
-	if args.Command == "interactive" {
+	if args.Command == "" {
+		// Interactive mode
 		tui.TextInfo(asciiArt)
 		tui.ShowInfo(fmt.Sprintf("v%s", version))
 		tui.ShowLine()
@@ -184,6 +185,7 @@ func main() {
 		return
 	}
 
+	// Non-interactive mode
 	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
 	tui.ShowLine()
 

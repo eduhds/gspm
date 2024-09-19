@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=gspm
-Exec=gspm interactive
+Exec=gspm
 Icon=gspm
 Type=Application
 Categories=Utility;
