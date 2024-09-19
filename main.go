@@ -162,7 +162,9 @@ func main() {
 
 			execCommand, execOption := util.GetShellExec()
 
-			cmd := exec.Command(execCommand, execOption, fmt.Sprintf("%s %s %s", os.Args[0], option, repo))
+			program := strings.TrimSpace(strings.Join(os.Args, " "))
+
+			cmd := exec.Command(execCommand, execOption, fmt.Sprintf("%s %s %s", program, option, repo))
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
