@@ -28,6 +28,7 @@ func ShowOptions(title string, options []string) string {
 	selectedOption, _ := pterm.DefaultInteractiveSelect.
 		WithDefaultText(title).
 		WithOptions(options).
+		WithMaxHeight(10).
 		Show()
 	pterm.Println()
 	return selectedOption
