@@ -8,6 +8,7 @@ tasks:
       - powershell -Command "md build/windows/amd64 2>nul" || true
       - powershell -Command "md windows/dist 2>nul" || true
       - powershell -Command "rm build/windows/amd64/* 2>nul" || true
+      - powershell -Command "rm build/windows/amd64/* 2>nul" || true
       - powershell -Command "rm windows/dist/* 2>nul" || true
       - powershell -Command "rm *.syso"
       - go-winres make --in windows/winres.json
