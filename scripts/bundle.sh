@@ -11,7 +11,7 @@ identifier=com.github.eduhds.$appname
 mkdir -p macos
 mkdir -p macos/dist
 
-rm -rf macos/$bundle 2> /dev/null
+rm -rf macos/dist/* 2> /dev/null
 
 mkdir macos/$bundle
 mkdir macos/$bundle/Contents
@@ -65,7 +65,7 @@ echo 'APPL?????' > macos/$bundle/Contents/PkgInfo
 cat << EOF > macos/$bundle/Contents/MacOS/$executable
 #!/bin/bash
 EXECUTABLE=\$(dirname "\$0")/$appname
-open -a Terminal --args "\$EXECUTABLE \$@"
+open -a Terminal --args "\$EXECUTABLE" "\$@"
 EOF
 
 chmod +x macos/$bundle/Contents/MacOS/$executable
@@ -73,21 +73,7 @@ chmod +x macos/$bundle/Contents/MacOS/$executable
 cp build/darwin/amd64/release/$appname macos/$bundle/Contents/MacOS
 cp macos/$appname.icns macos/$bundle/Contents/Resources
 
-rm *.dmg 2> /dev/null || true
-
 dmg_file=macos/dist/$appname-$(pkgx go env GOOS)-$(pkgx go env GOARCH).dmg
-
-cat << EOF > macos/dmg.json
-{
-  "title": "$appname Installer",
-  "icon": "$appname.icns",
-  "icon-size": 120,
-  "contents": [
-    { "x": 192, "y": 344, "type": "file", "path": "$bundle" },
-    { "x": 448, "y": 344, "type": "link", "path": "/Applications" }
-  ]
-}
-EOF
 
 npx appdmg macos/dmg.json $dmg_file
 
