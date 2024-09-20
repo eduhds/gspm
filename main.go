@@ -16,7 +16,7 @@ import (
 )
 
 const appname = "gspm"
-const version = "0.0.4"
+const version = "0.0.5"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
 const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" +
 	"a8\"    `Y88  I8[    \"\"  88P'    \"8a  88P'   \"88\"    \"8a \n" +
@@ -160,11 +160,9 @@ func main() {
 				repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
 			}
 
-			execCommand, execOption := util.GetShellExec()
-
 			program := strings.TrimSpace(strings.Join(os.Args, " "))
 
-			cmd := exec.Command(execCommand, execOption, fmt.Sprintf("%s %s %s", program, option, repo))
+			cmd := exec.Command(program, option, repo)
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
