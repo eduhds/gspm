@@ -2,6 +2,7 @@
   "title": "gspm Installer",
   "icon": "gspm.icns",
   "icon-size": 120,
+  "background": "background-dmg.png",
   "window": { 
     "size": { "width": 480, "height": 320 },
     "position": { "x": 350, "y": 350 }
