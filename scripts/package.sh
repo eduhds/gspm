@@ -3,7 +3,7 @@
 set -e
 
 appname=gspm
-version=0.0.4
+version=0.0.5
 os=$(go env GOOS)
 arch=$(go env GOARCH)
 output=$appname-$os-$arch
