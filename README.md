@@ -17,9 +17,11 @@ Support installing from releases with custom script.
 curl -sL https://dub.sh/gspm | bash
 ```
 
-<img src="assets/BadgeWindows.png" alt="Windows" width="120" />
-<img src="assets/BadgeLinux.png" alt="Linux" width="120" />
-<img src="assets/BadgeMacOS.png" alt="macOS" width="120" />
+<p>
+  <img src="assets/BadgeWindows.png" alt="Windows" width="120" />
+  <img src="assets/BadgeLinux.png" alt="Linux" width="120" />
+  <img src="assets/BadgeMacOS.png" alt="macOS" width="120" />
+</p>
 
 Or download manually from [releases](https://github.com/eduhds/gspm/releases).
 
