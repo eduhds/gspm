@@ -41,7 +41,7 @@ Download manually from [releases](https://github.com/eduhds/gspm/releases).
 
 Use `gspm` to update itself.
 
-```
+```sh
 # MacOS/Linux
 gspm eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{ASSET}}'
 ```
