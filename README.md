@@ -43,10 +43,28 @@ Use `gspm` to update itself.
 
 ```sh
 # MacOS/Linux
-gspm eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{ASSET}}'
+gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{ASSET}}'
 ```
 
 ## Usage
+
+### CLI
+
+```sh
+Usage: gspm [--script SCRIPT] [COMMAND [REPOS [REPOS ...]]]
+
+Positional arguments:
+  COMMAND                Command to run. Must be add, remove, update, install, edit, or list.
+  REPOS                  Repos from Git Services (GitHub supported only for now). Format: username/repository
+
+Options:
+  --script SCRIPT, -s SCRIPT
+                         Script to run after download a asset. Use {{ASSET}} to reference the asset path.
+  --help, -h             display this help and exit
+  --version              display version and exit
+```
+
+### Examples
 
 ```sh
 # Add
