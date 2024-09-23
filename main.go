@@ -198,6 +198,11 @@ func main() {
 			tui.ShowInfo("No packages found")
 			return
 		}
+
+		if len(args.Repos) > 0 || len(args.Scripts) > 0 {
+			tui.ShowWarning("Ignoring args for install command.")
+		}
+
 		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
 
 		for _, item := range platformPackages {
@@ -389,6 +394,8 @@ func main() {
 									break
 								}
 							}
+						} else {
+							config.Packages = append(config.Packages, gsPackage)
 						}
 					}
 				}
