@@ -3,7 +3,7 @@
 set -e
 
 appname=gspm
-version=0.0.5
+version=0.1.0
 os=$(go env GOOS)
 arch=$(go env GOARCH)
 output=$appname-$os-$arch
@@ -27,16 +27,16 @@ done
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-appimage \
     bash -c "$cmd --output appimage"
 
-mv *.AppImage $os/dist
+mv *.AppImage $os/dist/$appname-$os-$arch.AppImage
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-rpm \
     bash -c "LDNP_BUILD=rpm $cmd --output native_packages"
 
-mv *.rpm $os/dist
+mv *.rpm $os/dist/$appname-$os-$arch.rpm
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-deb \
     bash -c "LDNP_BUILD=deb $cmd --output native_packages"
 
-mv *.deb $os/dist
+mv *.deb $os/dist/$appname-$os-$arch.deb
 
-tar -C build/$os/$arch -czf $os/dist/$appname-$os-$arch.tar.gz $appname
+tar -C build/$os/$arch/release -czf $os/dist/$appname-$os-$arch.tar.gz $appname
