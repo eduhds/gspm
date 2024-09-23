@@ -17,17 +17,18 @@ if [ "$(uname)" = "Darwin" ]; then
     done
 
     iconutil -c icns -o macos/gspm.icns macos/Icon.iconset
-else
-    if [ -f linux/icons/**/gspm.png ]; then
-        exit 0
-    fi
-    
+else    
     mkdir -p linux/icons
 
     sizes=(16 32 64 96 128 256)
 
     for size in "${sizes[@]}"; do
         mkdir -p linux/icons/${size}x${size}
+
+        if [ -f "linux/icons/${size}x${size}/gspm.png" ]; then
+            continue
+        fi
+
         ffmpeg -i assets/gspm-1024x1024.png -vf scale=${size}:${size} linux/icons/${size}x${size}/gspm.png
     done
 
@@ -37,8 +38,14 @@ else
     sizes=(256)
 
     for size in "${sizes[@]}"; do
+        if [ -f "windows/icons/icon-${size}.png" ]; then
+            continue
+        fi
+
         ffmpeg -i assets/gspm-1024x1024.png -vf scale=${size}:${size} windows/icons/icon-${size}.png
     done
 
-    ffmpeg -i windows/icons/icon-256.png windows/icons/icon.ico
+    if ! [ -f "windows/icons/icon-256.png" ]; then
+        ffmpeg -i windows/icons/icon-256.png windows/icons/icon.ico
+    fi
 fi
