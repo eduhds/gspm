@@ -27,16 +27,16 @@ done
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-appimage \
     bash -c "$cmd --output appimage"
 
-mv *.AppImage $os/dist/$appname-$os-$arch.AppImage
+mv *.AppImage dist/$appname-$os-$arch.AppImage
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-rpm \
     bash -c "LDNP_BUILD=rpm $cmd --output native_packages"
 
-mv *.rpm $os/dist/$appname-$os-$arch.rpm
+mv *.rpm dist/$appname-$os-$arch.rpm
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-deb \
     bash -c "LDNP_BUILD=deb $cmd --output native_packages"
 
-mv *.deb $os/dist/$appname-$os-$arch.deb
+mv *.deb dist/$appname-$os-$arch.deb
 
-tar -C build/$os/$arch/release -czf $os/dist/$appname-$os-$arch.tar.gz $appname
+tar -C build/$os/$arch/release -czf dist/$appname-$os-$arch.tar.gz $appname
