@@ -4,19 +4,21 @@ set -e
 
 appname=gspm
 version=0.1.1
-bundle=dist/$appname.app
+bundle=$appname.app
 executable=launch
 identifier=com.github.eduhds.$appname
+output=$appname-macos-$(pkgx go env GOARCH)
 
 mkdir -p dist
 
-rm -rf $bundle 2> /dev/null
+rm -rf dist/$bundle 2> /dev/null
+rm dist/*.dmg 2> /dev/null
 
-mkdir $bundle
-mkdir $bundle/Contents
-mkdir $bundle/Contents/{MacOS,Resources}
+mkdir dist/$bundle
+mkdir dist/$bundle/Contents
+mkdir dist/$bundle/Contents/{MacOS,Resources}
 
-cat << EOF > $bundle/Contents/Info.plist 
+cat << EOF > dist/$bundle/Contents/Info.plist 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
     "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -59,20 +61,19 @@ cat << EOF > $bundle/Contents/Info.plist
 </plist>
 EOF
 
-echo 'APPL?????' > $bundle/Contents/PkgInfo
+echo 'APPL?????' > dist/$bundle/Contents/PkgInfo
 
-cat << EOF > $bundle/Contents/MacOS/$executable
+cat << EOF > dist/$bundle/Contents/MacOS/$executable
 #!/bin/bash
 EXECUTABLE=\$(dirname "\$0")/$appname
 open -a Terminal --args "\$EXECUTABLE" "\$@"
 EOF
 
-chmod +x $bundle/Contents/MacOS/$executable
+chmod +x dist/$bundle/Contents/MacOS/$executable
 
-cp build/darwin/amd64/release/$appname $bundle/Contents/MacOS
-cp macos/$appname.icns $bundle/Contents/Resources
+cp build/darwin/amd64/release/$appname dist/$bundle/Contents/MacOS
+cp macos/$appname.icns dist/$bundle/Contents/Resources
 
-dmg_file=dist/$appname-$(pkgx go env GOOS)-$(pkgx go env GOARCH).dmg
+npx appdmg macos/dmg.json dist/$output.dmg
 
-npx appdmg macos/dmg.json $dmg_file
-
+tar -C build/darwin/amd64/release -czf dist/$output.tar.gz $appname

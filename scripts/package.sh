@@ -8,11 +8,15 @@ os=$(go env GOOS)
 arch=$(go env GOARCH)
 output=$appname-$os-$arch
 
-rm -rf $os/{AppDir,dist} 2> /dev/null
-mkdir $os/{AppDir,dist}
+mkdir -p dist
+
+rm -rf dist/AppDir 2> /dev/null
+rm dist/*.{rpm,deb,AppImage,tar.gz} 2> /dev/null
+
+mkdir dist/AppDir
 
 cmd="LINUXDEPLOY_OUTPUT_APP_NAME=$output LINUXDEPLOY_OUTPUT_VERSION=$version linuxdeploy \
-    --appdir $os/AppDir \
+    --appdir dist/AppDir \
     --executable build/$os/$arch/release/$appname \
     --desktop-file $os/$appname.desktop \
 "
@@ -27,16 +31,16 @@ done
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-appimage \
     bash -c "$cmd --output appimage"
 
-mv *.AppImage dist/$appname-$os-$arch.AppImage
+mv *.AppImage dist/$output.AppImage
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-rpm \
     bash -c "LDNP_BUILD=rpm $cmd --output native_packages"
 
-mv *.rpm dist/$appname-$os-$arch.rpm
+mv *.rpm dist/$output.rpm
 
 docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-deb \
     bash -c "LDNP_BUILD=deb $cmd --output native_packages"
 
-mv *.deb dist/$appname-$os-$arch.deb
+mv *.deb dist/$output.deb
 
-tar -C build/$os/$arch/release -czf dist/$appname-$os-$arch.tar.gz $appname
+tar -C build/$os/$arch/release -czf dist/$output.tar.gz $appname
