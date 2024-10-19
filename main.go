@@ -26,25 +26,6 @@ const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" 
 	" aa,    ,88             88                              \n" +
 	"  \"Y8bbdP\"              88                              \n"
 
-type GSPackage struct {
-	Name     string
-	Tag      string
-	AssetUrl string
-	Script   string
-	Platform string
-}
-
-type GSConfig struct {
-	GSPM     struct{}
-	Packages []GSPackage
-}
-
-type args struct {
-	Command string   `arg:"positional" help:"Command to run. Must be add, remove, update, install, edit, or list."`
-	Repos   []string `arg:"positional" help:"Repos from Git Services (GitHub supported only for now). Format: username/repository"`
-	Scripts []string `arg:"-s,--script,separate" help:"Script to run after download a asset. Use {{ASSET}} to reference the asset path."`
-}
-
 func (args) Version() string {
 	return fmt.Sprintf("%s v%s", appname, version)
 }
@@ -470,6 +451,9 @@ func main() {
 		}
 
 		WriteConfig(config)
+	} else if args.Command == "info" {
+		gsp, _ := ResolvePackage(args.Repos[0], platformPackages)
+		fmt.Printf("Name: %s\nTag: %s\nAssetUrl: %s\nScript: %s\nPlatform: %s\nLastModifed: %s", gsp.Name, gsp.Tag, gsp.AssetUrl, gsp.Script, gsp.Platform, gsp.LastModfied)
 	} else {
 		tui.ShowError("Unknown command: " + args.Command)
 		os.Exit(1)
