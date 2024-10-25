@@ -391,23 +391,17 @@ func main() {
 			tui.ShowInfo("No packages found")
 			return
 		}
+    
+    for index, value := range args.Repos {
+      if index > 0 {
+        tui.ShowLine()
+      }
 
-		var keepedPackages []GSPackage
+      gsp, _ := ResolvePackage(value, platformPackages)
 
-		for _, item := range config.Packages {
-			if item.Platform == runtime.GOOS && item.Name == args.Repos[0] {
-				tui.ShowInfo("Package " + item.Name + " removed")
-			} else {
-				keepedPackages = append(keepedPackages, item)
-			}
-		}
-
-		if len(keepedPackages) == len(config.Packages) {
-			tui.ShowError("Package not found: " + args.Repos[0])
-			os.Exit(1)
-		}
-
-		config.Packages = keepedPackages
+      config = CommandRemove(config, gsp)
+      
+    }
 
 		WriteConfig(config)
 	} else if args.Command == "edit" {
@@ -420,41 +414,22 @@ func main() {
 			if index > 0 {
 				tui.ShowLine()
 			}
-			packageName := value
 
-			var gsPackage GSPackage
+      gsp, _ := ResolvePackage(value, platformPackages)
 
-			for _, configPackage := range platformPackages {
-				if configPackage.Name == packageName {
-					gsPackage = configPackage
-					break
-				}
-			}
-
-			if gsPackage.Name == "" {
-				tui.ShowError("Package not found: " + packageName)
-				continue
-			}
-
-			tui.ShowWarning("Editing script for package " + gsPackage.Name)
-
-			tui.ShowInfo("Use {{ASSET}} to reference the asset path")
-			script := tui.ShowTextInput("Enter a script", true, gsPackage.Script)
-			gsPackage.Script = script
-
-			for index, configPackage := range config.Packages {
-				if configPackage.Platform == runtime.GOOS && configPackage.Name == gsPackage.Name {
-					config.Packages[index] = gsPackage
-					break
-				}
-			}
+      if gsp.Tag == "" {
+        tui.ShowError("Package not found: " + gsp.Name)
+        continue
+      }
+      
+      config = CommandEdit(config, gsp)
 		}
 
 		WriteConfig(config)
 	} else if args.Command == "info" {
 		gsp, _ := ResolvePackage(args.Repos[0], platformPackages)
-		fmt.Printf("Name: %s\nTag: %s\nAssetUrl: %s\nScript: %s\nPlatform: %s\nLastModifed: %s", gsp.Name, gsp.Tag, gsp.AssetUrl, gsp.Script, gsp.Platform, gsp.LastModfied)
-	} else {
+		CommandInfo(gsp)
+  } else {
 		tui.ShowError("Unknown command: " + args.Command)
 		os.Exit(1)
 	}
