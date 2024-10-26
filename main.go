@@ -26,6 +26,8 @@ const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" 
 	" aa,    ,88             88                              \n" +
 	"  \"Y8bbdP\"              88                              \n"
 
+var customConfigDir string = ""
+
 func (args) Version() string {
 	return fmt.Sprintf("%s v%s", appname, version)
 }
@@ -48,6 +50,11 @@ func GetDownloadsDir() string {
 
 func GetConfigDir() string {
 	directory := filepath.Join(util.GetHomeDir(), ".config")
+
+	if customConfigDir != "" {
+		directory = customConfigDir
+	}
+
 	util.CreateDirIfNotExists(directory)
 	return directory
 }
@@ -104,16 +111,6 @@ func WriteConfig(config GSConfig) {
 	}
 }
 
-func PlatformPackages(config GSConfig) []GSPackage {
-	var packages []GSPackage
-	for _, item := range config.Packages {
-		if item.Platform == runtime.GOOS {
-			packages = append(packages, item)
-		}
-	}
-	return packages
-}
-
 func AssetNameFromUrl(url string) string {
 	urlSplited := strings.Split(url, "/")
 	assetNameFromUrl := urlSplited[len(urlSplited)-1]
@@ -123,6 +120,11 @@ func AssetNameFromUrl(url string) string {
 func main() {
 	var args args
 	arg.MustParse(&args)
+
+	if args.ConfigDir != "" {
+		customConfigDir = args.ConfigDir
+		tui.ShowInfo("Using custom config directory: " + customConfigDir)
+	}
 
 	if args.Command == "" {
 		// Interactive mode
@@ -184,39 +186,15 @@ func main() {
 			tui.ShowWarning("Ignoring args for install command.")
 		}
 
-		tui.ShowInfo(fmt.Sprintf("Loaded %d packages", countPackages))
-
-		for _, item := range platformPackages {
-			tui.ShowInfo("Installing package: " + item.Name)
-			assetName := AssetNameFromUrl(item.AssetUrl)
-
-			stopInstallSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
-
-			success := gitservice.GetGitHubReleaseAsset(assetName, item.AssetUrl)
-
-			if success {
-				stopInstallSpn("success")
-				RunScript(assetName, item.Script)
-			} else {
-				stopInstallSpn("fail")
-			}
-		}
+		CommandInstall(platformPackages)
 	} else if args.Command == "list" {
 		if countPackages == 0 {
 			tui.ShowInfo("No packages found")
 			return
 		}
 
-		tui.ShowInfo(fmt.Sprintf("%d packages for %s", countPackages, runtime.GOOS))
-		tui.ShowLine()
-
-		for _, item := range platformPackages {
-			tui.ShowMessage("📦 " + item.Name + "@" + item.Tag)
-			tui.ShowMessage("🔗 " + item.AssetUrl)
-			tui.ShowMessage("🛠️  " + item.Script)
-			tui.ShowLine()
-		}
-	} else if args.Command == "add" || args.Command == "update" {
+		CommandList(platformPackages)
+	} else if args.Command == "add" {
 		if len(args.Repos) == 0 {
 			tui.ShowError("No packages provided")
 			return
@@ -246,7 +224,7 @@ func main() {
 			var gsPackage GSPackage
 			gsPackage.Name = packageName
 			gsPackage.Tag = packageTag
-
+			//
 			var assetName = ""
 
 			for _, configPackage := range platformPackages {
@@ -386,22 +364,59 @@ func main() {
 		}
 
 		WriteConfig(config)
+	} else if args.Command == "update" {
+		if len(args.Repos) == 0 {
+			tui.ShowError("No packages provided")
+			return
+		}
+
+		for index, value := range args.Repos {
+			if index > 0 {
+				tui.ShowLine()
+			}
+			packageInfo := strings.Split(value, "@")
+			packageName := packageInfo[0]
+
+			if len(strings.Split(packageName, "/")) != 2 {
+				tui.ShowError("Invalid package name: " + packageName)
+				continue
+			}
+
+			gsp, _ := ResolvePackage(packageName, platformPackages)
+
+			if gsp.Tag == "" {
+				tui.ShowError("Package not found: " + gsp.Name)
+				continue
+			}
+
+			if len(args.Scripts) > 0 && args.Scripts[index] != "" {
+				gsp.Script = args.Scripts[index]
+			}
+
+			config = CommandUpdate(config, gsp)
+		}
+
+		WriteConfig(config)
 	} else if args.Command == "remove" {
 		if countPackages == 0 {
 			tui.ShowInfo("No packages found")
 			return
 		}
-    
-    for index, value := range args.Repos {
-      if index > 0 {
-        tui.ShowLine()
-      }
 
-      gsp, _ := ResolvePackage(value, platformPackages)
+		for index, value := range args.Repos {
+			if index > 0 {
+				tui.ShowLine()
+			}
 
-      config = CommandRemove(config, gsp)
-      
-    }
+			gsp, _ := ResolvePackage(value, platformPackages)
+
+			if gsp.Tag == "" {
+				tui.ShowError("Package not found: " + gsp.Name)
+				continue
+			}
+
+			config = CommandRemove(config, gsp)
+		}
 
 		WriteConfig(config)
 	} else if args.Command == "edit" {
@@ -415,21 +430,21 @@ func main() {
 				tui.ShowLine()
 			}
 
-      gsp, _ := ResolvePackage(value, platformPackages)
+			gsp, _ := ResolvePackage(value, platformPackages)
 
-      if gsp.Tag == "" {
-        tui.ShowError("Package not found: " + gsp.Name)
-        continue
-      }
-      
-      config = CommandEdit(config, gsp)
+			if gsp.Tag == "" {
+				tui.ShowError("Package not found: " + gsp.Name)
+				continue
+			}
+
+			config = CommandEdit(config, gsp)
 		}
 
 		WriteConfig(config)
 	} else if args.Command == "info" {
 		gsp, _ := ResolvePackage(args.Repos[0], platformPackages)
 		CommandInfo(gsp)
-  } else {
+	} else {
 		tui.ShowError("Unknown command: " + args.Command)
 		os.Exit(1)
 	}

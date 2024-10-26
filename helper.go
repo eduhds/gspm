@@ -2,8 +2,19 @@ package main
 
 import (
 	"errors"
+	"runtime"
 	"strings"
 )
+
+func PlatformPackages(config GSConfig) []GSPackage {
+	var packages []GSPackage
+	for _, item := range config.Packages {
+		if item.Platform == runtime.GOOS {
+			packages = append(packages, item)
+		}
+	}
+	return packages
+}
 
 func ResolvePackage(repo string, packages []GSPackage) (GSPackage, error) {
 	for _, item := range packages {
