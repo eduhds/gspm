@@ -9,3 +9,6 @@ AppDir
 task.exe
 
 *.syso
+
+gspm.json
+gspm.json.bkp
