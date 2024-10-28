@@ -3,12 +3,31 @@ package util
 import (
 	"os"
 	"os/user"
+	"path/filepath"
 	"runtime"
+	"time"
 )
 
 func GetHomeDir() string {
 	u, _ := user.Current()
 	return u.HomeDir
+}
+
+func GetConfigDir(overrideDir string) string {
+	directory := filepath.Join(GetHomeDir(), ".config")
+
+	if overrideDir != "" {
+		directory = overrideDir
+	}
+
+	CreateDirIfNotExists(directory)
+	return directory
+}
+
+func GetDownloadsDir() string {
+	directory := filepath.Join(GetHomeDir(), "Downloads")
+	CreateDirIfNotExists(directory)
+	return directory
 }
 
 func CreateDirIfNotExists(dir string) {
@@ -27,4 +46,8 @@ func GetShellExec() (string, string) {
 	}
 
 	return execCommand, execOption
+}
+
+func DateLocalNow() string {
+	return time.Now().Local().Format(time.RFC3339)
 }

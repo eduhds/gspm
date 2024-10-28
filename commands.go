@@ -2,12 +2,114 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"runtime"
-	"time"
 
 	"github.com/eduhds/gspm/internal/gitservice"
 	"github.com/eduhds/gspm/internal/tui"
+	"github.com/eduhds/gspm/internal/util"
 )
+
+func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
+	stopReleasesSpn := tui.ShowSpinner(fmt.Sprintf("Fetching %s releases...", gsp.Name))
+
+	releases, err := gitservice.GetGitHubReleases(gsp.Name)
+
+	if err != nil {
+		stopReleasesSpn("fail")
+		tui.ShowError(err.Error())
+		return cfg
+	}
+
+	stopReleasesSpn("success")
+
+	if len(releases) == 0 {
+		tui.ShowInfo("No releases found for " + gsp.Name)
+		return cfg
+	}
+
+	var tag string
+	var tagOptions []string
+	var assets = make(map[string][]gitservice.GSGitHubReleaseAsset)
+	var assetOptions []string
+
+	for _, release := range releases {
+		if tag == "" {
+			if gsp.Tag == release.TagName {
+				tag = release.TagName
+			}
+			tagOptions = append(tagOptions, release.TagName)
+		}
+		assets[release.TagName] = release.Assets
+	}
+
+	if tag == "" {
+		tag = tui.ShowOptions("Select a tag", tagOptions)
+		gsp.Tag = tag
+	}
+
+	if len(assets[tag]) == 0 {
+		tui.ShowInfo("No assets found for " + gsp.Name + "@" + tag)
+		return cfg
+	}
+
+	for _, asset := range assets[tag] {
+		assetOptions = append(assetOptions, asset.Name)
+	}
+
+	assetName := tui.ShowOptions("Select an asset", assetOptions)
+
+	for _, asset := range assets[tag] {
+		if asset.Name == assetName {
+			gsp.AssetUrl = asset.BrowserDownloadUrl
+			break
+		}
+	}
+
+	stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
+
+	success := gitservice.GetGitHubReleaseAsset(assetName, gsp.AssetUrl)
+
+	if success {
+		stopAssetSpn("success")
+
+		if gsp.Script == "" {
+			wantRunScript := tui.ShowConfirm("Do you want to run a script?")
+
+			if wantRunScript {
+				tui.ShowInfo("Use {{ASSET}} to reference the asset path")
+				gsp.Script = tui.ShowTextInput("Enter a script", true, "")
+			} else {
+				tui.ShowInfo("Script not provided.")
+				tui.ShowSuccess("Package located at " + filepath.Join(downloadPrefix, assetName))
+			}
+		}
+
+		if gsp.Script != "" {
+			RunScript(assetName, gsp.Script)
+		}
+
+		gsp.LastModfied = util.DateLocalNow()
+
+		var found = false
+
+		for index, configPackage := range cfg.Packages {
+			if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
+				cfg.Packages[index] = gsp
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			cfg.Packages = append(cfg.Packages, gsp)
+		}
+	} else {
+		stopAssetSpn("fail")
+	}
+
+	return cfg
+}
 
 func CommandEdit(cfg GSConfig, gsp GSPackage) GSConfig {
 	tui.ShowWarning("Editing script for package " + gsp.Name)
@@ -18,6 +120,7 @@ func CommandEdit(cfg GSConfig, gsp GSPackage) GSConfig {
 
 	for index, configPackage := range cfg.Packages {
 		if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
+			gsp.LastModfied = util.DateLocalNow()
 			cfg.Packages[index] = gsp
 			break
 		}
@@ -37,7 +140,14 @@ func CommandInfo(gsp GSPackage) {
 	}
 }
 
-func CommandInstall(platformPackages []GSPackage) {
+func CommandInstall(config GSConfig) {
+	platformPackages := PlatformPackages(config)
+
+	if len(platformPackages) == 0 {
+		tui.ShowInfo("No packages found")
+		return
+	}
+
 	tui.ShowInfo(fmt.Sprintf("Loaded %d packages", len(platformPackages)))
 
 	for _, item := range platformPackages {
@@ -57,7 +167,14 @@ func CommandInstall(platformPackages []GSPackage) {
 	}
 }
 
-func CommandList(platformPackages []GSPackage) {
+func CommandList(config GSConfig) {
+	platformPackages := PlatformPackages(config)
+
+	if len(platformPackages) == 0 {
+		tui.ShowInfo("No packages found")
+		return
+	}
+
 	tui.ShowInfo(fmt.Sprintf("%d packages for %s", len(platformPackages), runtime.GOOS))
 	tui.ShowLine()
 
@@ -86,10 +203,7 @@ func CommandRemove(cfg GSConfig, gsp GSPackage) GSConfig {
 }
 
 func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
-
-	var assetName = ""
-
-	assetName = AssetNameFromUrl(gsp.AssetUrl)
+	var assetName = AssetNameFromUrl(gsp.AssetUrl)
 
 	stopReleasesSpn := tui.ShowSpinner(fmt.Sprintf("Fetching %s releases...", gsp.Name))
 
@@ -124,7 +238,6 @@ func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 	var assetOptions []string
 
 	for _, asset := range assets {
-		fmt.Println(asset.Name)
 		if assetName == asset.Name {
 			gsp.AssetUrl = asset.BrowserDownloadUrl
 			break
@@ -153,7 +266,7 @@ func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 		stopAssetSpn("success")
 
 		if RunScript(assetName, gsp.Script) {
-			gsp.LastModfied = time.Now().Local().Format(time.RFC3339)
+			gsp.LastModfied = util.DateLocalNow()
 
 			for index, configPackage := range cfg.Packages {
 				if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
