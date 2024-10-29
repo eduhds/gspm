@@ -10,8 +10,8 @@ output=$appname-$os-$arch
 
 mkdir -p dist
 
-rm -rf dist/AppDir 2> /dev/null
-rm dist/*.{rpm,deb,AppImage,tar.gz} 2> /dev/null
+rm -rf dist/AppDir 2> /dev/null || true
+rm dist/*.{rpm,deb,AppImage,tar.gz} 2> /dev/null || true
 
 mkdir dist/AppDir
 

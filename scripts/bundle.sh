@@ -5,14 +5,14 @@ set -e
 appname=gspm
 version=0.1.1
 bundle=$appname.app
-executable=launch
+launch=launch
 identifier=com.github.eduhds.$appname
 output=$appname-macos-$(pkgx go env GOARCH)
 
 mkdir -p dist
 
-rm -rf dist/$bundle 2> /dev/null
-rm dist/*.dmg 2> /dev/null
+rm -rf dist/$bundle 2> /dev/null || true
+rm dist/*.dmg 2> /dev/null || true
 
 mkdir dist/$bundle
 mkdir dist/$bundle/Contents
@@ -27,7 +27,7 @@ cat << EOF > dist/$bundle/Contents/Info.plist
     <key>CFBundleDevelopmentRegion</key>
     <string>English</string>
     <key>CFBundleExecutable</key>
-    <string>$executable</string>
+    <string>$launch</string>
     <key>CFBundleIdentifier</key>
     <string>$identifier</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -63,13 +63,13 @@ EOF
 
 echo 'APPL?????' > dist/$bundle/Contents/PkgInfo
 
-cat << EOF > dist/$bundle/Contents/MacOS/$executable
+cat << EOF > dist/$bundle/Contents/MacOS/$launch
 #!/bin/bash
 EXECUTABLE=\$(dirname "\$0")/$appname
-open -a Terminal --args "\$EXECUTABLE" "\$@"
+open "\$EXECUTABLE"
 EOF
 
-chmod +x dist/$bundle/Contents/MacOS/$executable
+chmod +x dist/$bundle/Contents/MacOS/$launch
 
 cp build/darwin/amd64/release/$appname dist/$bundle/Contents/MacOS
 cp macos/$appname.icns dist/$bundle/Contents/Resources
