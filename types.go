@@ -10,7 +10,9 @@ type GSPackage struct {
 }
 
 type GSConfig struct {
-	GSPM     struct{}
+	GSPM struct {
+		Version string
+	}
 	Packages []GSPackage
 }
 

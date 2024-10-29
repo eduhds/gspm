@@ -99,6 +99,8 @@ func ReadConfig() GSConfig {
 }
 
 func WriteConfig(config GSConfig) {
+	config.GSPM.Version = "1"
+
 	configBytes, _ := json.MarshalIndent(config, "", "    ")
 
 	err := os.WriteFile(filepath.Join(util.GetConfigDir(customConfigDir), fmt.Sprintf("%s.json", appname)), configBytes, 0644)
