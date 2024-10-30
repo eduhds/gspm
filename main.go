@@ -56,29 +56,33 @@ func main() {
 		quit := false
 
 		for !quit {
-			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "info", "list"})
+			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "info", "list", "<cancel>"})
 
-			repo := ""
+      if option == "<cancel>" {
+        quit = true
+      } else {
+			  repo := ""
 
-			if option != "list" && option != "install" {
-				repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
-			}
+			  if option != "list" && option != "install" {
+				  repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
+			  }
 
-			program := strings.TrimSpace(strings.Join(os.Args, " "))
+			  program := strings.TrimSpace(strings.Join(os.Args, " "))
 
-			cmd := exec.Command(program, option, repo)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
+			  cmd := exec.Command(program, option, repo)
+			  cmd.Stdin = os.Stdin
+			  cmd.Stdout = os.Stdout
+			  cmd.Stderr = os.Stderr
 
-			err := cmd.Run()
+			  err := cmd.Run()
 
-			if err != nil {
-				tui.ShowError(err.Error())
-			}
+			  if err != nil {
+				  tui.ShowError(err.Error())
+			  }
 
-			tui.ShowLine()
-			quit = !tui.ShowConfirm("Continue to another command?")
+			  tui.ShowLine()
+			  quit = !tui.ShowConfirm("Continue to another command?")
+      }
 
 			if quit {
 				tui.TextSuccess(description)
