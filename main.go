@@ -12,7 +12,7 @@ import (
 )
 
 const appname = "gspm"
-const version = "0.1.1"
+const version = "0.1.2"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
 const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" +
 	"a8\"    `Y88  I8[    \"\"  88P'    \"8a  88P'   \"88\"    \"8a \n" +
@@ -58,31 +58,31 @@ func main() {
 		for !quit {
 			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "info", "list", "<cancel>"})
 
-      if option == "<cancel>" {
-        quit = true
-      } else {
-			  repo := ""
+			if option == "<cancel>" {
+				quit = true
+			} else {
+				repo := ""
 
-			  if option != "list" && option != "install" {
-				  repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
-			  }
+				if option != "list" && option != "install" {
+					repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
+				}
 
-			  program := strings.TrimSpace(strings.Join(os.Args, " "))
+				program := strings.TrimSpace(strings.Join(os.Args, " "))
 
-			  cmd := exec.Command(program, option, repo)
-			  cmd.Stdin = os.Stdin
-			  cmd.Stdout = os.Stdout
-			  cmd.Stderr = os.Stderr
+				cmd := exec.Command(program, option, repo)
+				cmd.Stdin = os.Stdin
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
 
-			  err := cmd.Run()
+				err := cmd.Run()
 
-			  if err != nil {
-				  tui.ShowError(err.Error())
-			  }
+				if err != nil {
+					tui.ShowError(err.Error())
+				}
 
-			  tui.ShowLine()
-			  quit = !tui.ShowConfirm("Continue to another command?")
-      }
+				tui.ShowLine()
+				quit = !tui.ShowConfirm("Continue to another command?")
+			}
 
 			if quit {
 				tui.TextSuccess(description)

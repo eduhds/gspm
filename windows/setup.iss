@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "gspm"
-#define MyAppVersion "0.1.1"
+#define MyAppVersion "0.1.2"
 #define MyAppPublisher "@eduhds"
 #define MyAppURL "https://github.com/eduhds/gspm"
 #define MyAppExeName "gspm.exe"
@@ -30,7 +30,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=\\host.lan\Data\gspm\windows\dist
+OutputDir=\\host.lan\Data\gspm\dist
 OutputBaseFilename=gspm-windows-amd64-setup
 SetupIconFile=\\host.lan\Data\gspm\windows\icons\icon.ico
 Compression=lzma
