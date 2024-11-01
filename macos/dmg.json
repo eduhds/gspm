@@ -3,12 +3,12 @@
   "icon": "gspm.icns",
   "icon-size": 120,
   "background": "background-dmg.png",
-  "window": { 
+  "window": {
     "size": { "width": 480, "height": 320 },
     "position": { "x": 350, "y": 350 }
   },
   "contents": [
-    { "x": 120, "y": 180, "type": "file", "path": "dist/gspm.app" },
+    { "x": 120, "y": 180, "type": "file", "path": "../dist/gspm.app" },
     { "x": 360, "y": 180, "type": "link", "path": "/Applications" }
   ]
 }
