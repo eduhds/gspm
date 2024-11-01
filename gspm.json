@@ -1,0 +1,31 @@
+{
+    "GSPM": {
+        "Version": "1"
+    },
+    "Packages": [
+        {
+            "Name": "go-task/task",
+            "Tag": "v3.39.2",
+            "AssetUrl": "https://github.com/go-task/task/releases/download/v3.39.2/task_windows_amd64.zip",
+            "Script": "tar -C C:\\gspm -xf {{ASSET}} task.exe \u0026\u0026 del {{ASSET}}",
+            "Platform": "windows",
+            "LastModfied": "2024-11-01T16:09:59-07:00"
+        },
+        {
+            "Name": "eduhds/gspm",
+            "Tag": "v0.1.2",
+            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-windows-amd64.zip",
+            "Script": "tar -C C:\\gspm -xf {{ASSET}} \u0026\u0026 del {{ASSET}}",
+            "Platform": "windows",
+            "LastModfied": "2024-11-01T16:22:32-07:00"
+        },
+        {
+            "Name": "eduhds/gspm",
+            "Tag": "v0.1.2",
+            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-linux-amd64.AppImage",
+            "Script": "",
+            "Platform": "linux",
+            "LastModfied": "2024-11-01T13:43:41-03:00"
+        }
+    ]
+}
