@@ -26,7 +26,7 @@ curl -sL https://dub.sh/gspm | bash
   <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-linux-amd64.AppImage">
     <img src="assets/BadgeLinux.png" alt="Linux" width="120" />
   </a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-darwin-amd64.dmg">
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-macos-amd64.dmg">
     <img src="assets/BadgeMacOS.png" alt="macOS" width="120" />
   </a>
 </p>
