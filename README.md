@@ -9,6 +9,18 @@ Git Services Package Manager (GitHub supported only for now).
 
 Support installing from releases with custom script.
 
+<p align="center">
+  <img src="./screencast.gif" style="display: block; margin: auto;" />
+</p>
+
+## Features
+
+- Get asset from repository releases.
+- Run custom script to install, uncompress, move, etc.
+- Save repository/package info for future installs.
+- Interactive mode.
+- Multi-platform: Windows, Linux, MacOS.
+
 ## Install
 
 ### MacOS/Linux (recommended)
@@ -20,15 +32,9 @@ curl -sL https://dub.sh/gspm | bash
 ### Friendly installers
 
 <p>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-windows-amd64-setup.exe">
-    <img src="assets/BadgeWindows.png" alt="Windows" width="120" />
-  </a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-linux-amd64.AppImage">
-    <img src="assets/BadgeLinux.png" alt="Linux" width="120" />
-  </a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-macos-amd64.dmg">
-    <img src="assets/BadgeMacOS.png" alt="macOS" width="120" />
-  </a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-windows-amd64-setup.exe"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-linux-amd64.AppImage"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-macos-amd64.dmg"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
 </p>
 
 ### Installing manually
@@ -102,6 +108,11 @@ go run . <command> <arguments>
 # Build
 task build:release
 ```
+
+## 🤝 Support
+
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/eduhds)
+[![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/eduhds)
 
 ## Credits
 
