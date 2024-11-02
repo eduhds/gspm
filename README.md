@@ -10,7 +10,7 @@ Git Services Package Manager (GitHub supported only for now).
 Support installing from releases with custom script.
 
 <p align="center">
-  <img src="./screencast.gif" style="display: block; margin: auto;" />
+  <img src="./screencast.gif" style="display: block; margin: auto;" width="300px" />
 </p>
 
 ## Features
