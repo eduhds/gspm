@@ -86,7 +86,9 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 		}
 
 		if gsp.Script != "" {
-			RunScript(assetName, gsp.Script)
+			if !RunScript(assetName, gsp.Script) {
+				return cfg
+			}
 		}
 
 		gsp.LastModfied = util.DateLocalNow()
