@@ -12,7 +12,7 @@
       "0409": {
         "identity": {
           "name": "gspm",
-          "version": "0.1.2"
+          "version": "0.1.3"
         },
         "description": "",
         "minimum-os": "win7",

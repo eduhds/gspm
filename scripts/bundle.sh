@@ -3,7 +3,7 @@
 set -e
 
 appname=gspm
-version=0.1.2
+version=0.1.3
 bundle=$appname.app
 launch=launch
 identifier=com.github.eduhds.$appname

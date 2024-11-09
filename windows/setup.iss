@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "gspm"
-#define MyAppVersion "0.1.2"
+#define MyAppVersion "0.1.3"
 #define MyAppPublisher "@eduhds"
 #define MyAppURL "https://github.com/eduhds/gspm"
 #define MyAppExeName "gspm.exe"
