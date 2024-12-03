@@ -113,14 +113,16 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 	return cfg
 }
 
-func CommandEdit(cfg GSConfig, gsp GSPackage) GSConfig {
+func CommandEdit(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	tui.ShowWarning("Editing script for package " + gsp.Name)
 
-	tui.ShowInfo("Use {{ASSET}} to reference the asset path")
-	script := tui.ShowTextInput("Enter a script", true, gsp.Script)
-	gsp.Script = script
+  if !withScript {
+	    tui.ShowInfo("Use {{ASSET}} to reference the asset path")
+	    script := tui.ShowTextInput("Enter a script", true, gsp.Script)
+	    gsp.Script = script
+  }
 
-	for index, configPackage := range cfg.Packages {
+  for index, configPackage := range cfg.Packages {
 		if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
 			gsp.LastModfied = util.DateLocalNow()
 			cfg.Packages[index] = gsp

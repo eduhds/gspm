@@ -128,8 +128,10 @@ func main() {
 				continue
 			}
 
-			if args.Command == "add" || args.Command == "update" {
-				if len(args.Scripts) > 0 && args.Scripts[index] != "" {
+      withScript := len(args.Scripts) > 0 && args.Scripts[index] != ""
+
+			if args.Command == "add" || args.Command == "update" || args.Command == "edit" {
+				if withScript {
 					gsp.Script = args.Scripts[index]
 				}
 			}
@@ -141,7 +143,7 @@ func main() {
 			} else if args.Command == "remove" {
 				config = CommandRemove(config, gsp)
 			} else if args.Command == "edit" {
-				config = CommandEdit(config, gsp)
+				config = CommandEdit(config, gsp, withScript)
 			} else if args.Command == "info" {
 				CommandInfo(gsp)
 			}

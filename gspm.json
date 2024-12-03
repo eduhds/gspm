@@ -26,6 +26,14 @@
             "Script": "",
             "Platform": "linux",
             "LastModfied": "2024-11-01T13:43:41-03:00"
+        },
+        {
+            "Name": "eduhds/gspm",
+            "Tag": "v0.1.3",
+            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.3/gspm-macos-amd64.tar.gz",
+            "Script": "rm {{ASSET}}",
+            "Platform": "darwin",
+            "LastModfied": "2024-12-03T20:06:41-03:00"
         }
     ]
 }
