@@ -43,4 +43,6 @@ docker run --rm -v $(pwd):/builder eduhds/linuxdeploy-deb \
 
 mv *.deb dist/$output.deb
 
-tar -C build/$os/$arch/release -czf dist/$output.tar.gz $appname
+cp LICENSE.txt build/$os/$arch/release
+cp README.md build/$os/$arch/release
+tar -C build/$os/$arch/release -czf dist/$output.tar.gz $appname LICENSE.txt README.md
