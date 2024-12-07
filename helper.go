@@ -65,12 +65,14 @@ func RunScript(assetName string, providedScript string) bool {
 
 	execCommand, execOption := util.GetShellExec()
 
-	out, err := exec.Command(execCommand, execOption, script).Output()
+	cmd := exec.Command(execCommand, execOption, script)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
 
 	if err != nil {
-		if string(out) != "" {
-			tui.ShowBox(string(out))
-		}
 		tui.ShowError(err.Error())
 		return false
 	} else {

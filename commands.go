@@ -116,13 +116,13 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 func CommandEdit(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	tui.ShowWarning("Editing script for package " + gsp.Name)
 
-  if !withScript {
-	    tui.ShowInfo("Use {{ASSET}} to reference the asset path")
-	    script := tui.ShowTextInput("Enter a script", true, gsp.Script)
-	    gsp.Script = script
-  }
+	if !withScript {
+		tui.ShowInfo("Use {{ASSET}} to reference the asset path")
+		script := tui.ShowTextInput("Enter a script", true, gsp.Script)
+		gsp.Script = script
+	}
 
-  for index, configPackage := range cfg.Packages {
+	for index, configPackage := range cfg.Packages {
 		if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
 			gsp.LastModfied = util.DateLocalNow()
 			cfg.Packages[index] = gsp
@@ -269,7 +269,19 @@ func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 	if success {
 		stopAssetSpn("success")
 
-		if RunScript(assetName, gsp.Script) {
+		if gsp.Script == "" {
+			wantRunScript := tui.ShowConfirm("Do you want to run a script?")
+
+			if wantRunScript {
+				tui.ShowInfo("Use {{ASSET}} to reference the asset path")
+				gsp.Script = tui.ShowTextInput("Enter a script", true, "")
+			} else {
+				tui.ShowInfo("Script not provided.")
+				tui.ShowSuccess("Package located at " + filepath.Join(downloadPrefix, assetName))
+			}
+		}
+
+		if gsp.Script != "" && RunScript(assetName, gsp.Script) {
 			gsp.LastModfied = util.DateLocalNow()
 
 			for index, configPackage := range cfg.Packages {
