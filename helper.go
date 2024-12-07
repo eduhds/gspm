@@ -79,7 +79,7 @@ func RunScript(assetName string, providedScript string) bool {
 	}
 }
 
-func ReadConfig() GSConfig {
+func ResolveConfig() GSConfig {
 	var config GSConfig
 
 	configFile, err := os.ReadFile(filepath.Join(util.GetConfigDir(customConfigDir), fmt.Sprintf("%s.json", appname)))

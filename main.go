@@ -97,7 +97,7 @@ func main() {
 	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
 	tui.ShowLine()
 
-	config := ReadConfig()
+	config := ResolveConfig()
 
 	switch args.Command {
 	case "list":
@@ -128,7 +128,7 @@ func main() {
 				continue
 			}
 
-      withScript := len(args.Scripts) > 0 && args.Scripts[index] != ""
+			withScript := len(args.Scripts) > 0 && args.Scripts[index] != ""
 
 			if args.Command == "add" || args.Command == "update" || args.Command == "edit" {
 				if withScript {
