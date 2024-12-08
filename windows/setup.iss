@@ -30,9 +30,9 @@ ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=\\host.lan\Data\gspm\dist
+OutputDir=C:\gspm\dist
 OutputBaseFilename=gspm-windows-amd64-setup
-SetupIconFile=\\host.lan\Data\gspm\windows\icons\icon.ico
+SetupIconFile=C:\gspm\windows\icons\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -70,7 +70,7 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "\\host.lan\Data\gspm\build\windows\amd64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\gspm\build\windows\amd64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

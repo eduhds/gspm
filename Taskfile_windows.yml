@@ -10,6 +10,8 @@ tasks:
       - powershell -Command "rm build/windows/amd64/* 2>nul" || true
       - powershell -Command "rm build/windows/amd64/* 2>nul" || true
       - powershell -Command "rm *.syso"
+      - cmd /c 'md dist >nul 2>&1'
       - go-winres make --in windows/winres.json
       - CGO_ENABLED=0 go build -ldflags "-s -w" -o build/windows/amd64/gspm.exe .
       - cd build/windows/amd64 && tar.exe -a -c -f ../../../dist/gspm-$(go env GOOS)-$(go env GOARCH).zip gspm.exe
+      - start .\windows\setup.iss
