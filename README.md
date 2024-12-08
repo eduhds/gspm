@@ -13,7 +13,7 @@ Support installing from releases with custom script.
   <img src="./screencast.gif" style="display: block; margin: auto;" />
 </p>
 
-## Features
+## ✨ Features
 
 - Get asset from repository releases.
 - Run custom script to install, uncompress, move, etc.
@@ -21,7 +21,7 @@ Support installing from releases with custom script.
 - Interactive mode.
 - Multi-platform: Windows, Linux, MacOS.
 
-## Install
+## ⬇️ Install
 
 ### MacOS/Linux (recommended)
 
@@ -53,7 +53,7 @@ Use `gspm` to update itself:
 gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{ASSET}}'
 ```
 
-## Usage
+## 📖 Usage
 
 ### CLI
 
@@ -96,10 +96,10 @@ gspm install
 GSPM_CONFIG_DIR=/path/to/custom/dir gspm <command> ...
 
 # Using inline Script
-gspm <add|update> username/repository -s 'your script here'
+gspm <add|update|edit> username/repository -s 'your script here'
 ```
 
-## Development
+## 🛠️ Development
 
 ```sh
 # Run
@@ -114,7 +114,13 @@ task build:release
 [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/eduhds)
 [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/eduhds)
 
-## Credits
+## 📜 License
+
+[GPL-3.0 license](./LICENSE.txt)
+
+## 🫂 Contributing
+
+## 🙏 Credits/Thanks
 
 - [alexflint/go-arg](https://github.com/alexflint/go-arg)
 - [imroc/req](https://github.com/imroc/req)

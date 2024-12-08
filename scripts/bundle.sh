@@ -76,4 +76,6 @@ cp macos/$appname.icns dist/$bundle/Contents/Resources
 
 npx appdmg macos/dmg.json dist/$output.dmg
 
-tar -C build/darwin/amd64/release -czf dist/$output.tar.gz $appname
+cp LICENSE.txt build/darwin/amd64/release
+cp README.md build/darwin/amd64/release
+tar -C build/darwin/amd64/release -czf dist/$output.tar.gz $appname LICENSE.txt README.md

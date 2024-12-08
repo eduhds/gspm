@@ -21,11 +21,19 @@
         },
         {
             "Name": "eduhds/gspm",
-            "Tag": "v0.1.2",
-            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-linux-amd64.AppImage",
-            "Script": "",
+            "Tag": "v0.1.3",
+            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.3/gspm-linux-amd64.AppImage",
+            "Script": "mv {{ASSET}} /tmp",
             "Platform": "linux",
-            "LastModfied": "2024-11-01T13:43:41-03:00"
+            "LastModfied": "2024-12-07T11:30:51-03:00"
+        },
+        {
+            "Name": "eduhds/gspm",
+            "Tag": "v0.1.3",
+            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.3/gspm-macos-amd64.tar.gz",
+            "Script": "rm {{ASSET}}",
+            "Platform": "darwin",
+            "LastModfied": "2024-12-03T20:06:41-03:00"
         }
     ]
 }
