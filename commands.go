@@ -61,14 +61,17 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 
 	for _, asset := range assets[tag] {
 		if asset.Name == assetName {
-			gsp.AssetUrl = asset.BrowserDownloadUrl
+			gsp.AssetUrl = asset.Url
 			break
 		}
 	}
 
 	stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
 
-	success := gitservice.GetGitHubReleaseAsset(assetName, gsp.AssetUrl)
+	success, err := gitservice.GetGitHubReleaseAsset(assetName, gsp.AssetUrl)
+	if err != nil {
+		tui.ShowError(err.Error())
+	}
 
 	if success {
 		stopAssetSpn("success")
@@ -160,7 +163,10 @@ func CommandInstall(config GSConfig) {
 
 		stopInstallSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
 
-		success := gitservice.GetGitHubReleaseAsset(assetName, item.AssetUrl)
+		success, err := gitservice.GetGitHubReleaseAsset(assetName, item.AssetUrl)
+		if err != nil {
+			tui.ShowError(err.Error())
+		}
 
 		if success {
 			stopInstallSpn("success")
@@ -243,7 +249,7 @@ func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 
 	for _, asset := range assets {
 		if assetName == asset.Name {
-			gsp.AssetUrl = asset.BrowserDownloadUrl
+			gsp.AssetUrl = asset.Url
 			break
 		}
 		assetOptions = append(assetOptions, asset.Name)
@@ -256,7 +262,7 @@ func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 
 		for _, asset := range assets {
 			if asset.Name == assetName {
-				gsp.AssetUrl = asset.BrowserDownloadUrl
+				gsp.AssetUrl = asset.Url
 				break
 			}
 		}
@@ -264,7 +270,10 @@ func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 
 	stopAssetSpn := tui.ShowSpinner(fmt.Sprintf("Downloading %s...", assetName))
 
-	success := gitservice.GetGitHubReleaseAsset(assetName, gsp.AssetUrl)
+	success, err := gitservice.GetGitHubReleaseAsset(assetName, gsp.AssetUrl)
+	if err != nil {
+		tui.ShowError(err.Error())
+	}
 
 	if success {
 		stopAssetSpn("success")

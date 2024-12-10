@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/alexflint/go-arg"
-  "github.com/eduhds/gspm/internal/gitservice"
+	"github.com/eduhds/gspm/internal/gitservice"
 	"github.com/eduhds/gspm/internal/tui"
 	"github.com/eduhds/gspm/internal/util"
 )
@@ -42,8 +42,10 @@ var downloadPrefix = util.GetDownloadsDir()
 func main() {
 	var args args
 	arg.MustParse(&args)
-  
-  gitservice.GHToken = ""
+
+	if args.GitHubToken != "" {
+		gitservice.GHToken = args.GitHubToken
+	}
 
 	if args.ConfigDir != "" {
 		customConfigDir = args.ConfigDir
