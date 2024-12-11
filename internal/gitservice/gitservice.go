@@ -18,13 +18,21 @@ type ErrorMessage struct {
 var client = req.C().
 	SetTimeout(60 * time.Second)
 
+var GHToken = ""
+
 func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 	var username string = strings.Split(packageName, "/")[0]
 	var repository string = strings.Split(packageName, "/")[1]
 	var releases []GSGitHubRelease
 	var errMsg ErrorMessage
 
-	resp, err := client.R().
+	cr := client.R()
+
+	if GHToken != "" {
+		cr.SetHeader("Authorization", fmt.Sprintf("Bearer %s", GHToken))
+	}
+
+	resp, err := cr.
 		SetPathParam("username", username).
 		SetPathParam("repo", repository).
 		SetSuccessResult(&releases).
@@ -48,16 +56,28 @@ func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 	return nil, errors.New("Unknown status: " + resp.Status)
 }
 
-func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) bool {
+func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) (bool, error) {
 	outputFile := filepath.Join(util.GetHomeDir(), "Downloads", assetName)
+	var errMsg ErrorMessage
 
-	_, err := client.R().SetOutputFile(outputFile).
+	cr := client.R()
+
+	if GHToken != "" {
+		cr.SetHeader("Authorization", fmt.Sprintf("Bearer %s", GHToken))
+	}
+
+	resp, err := cr.SetOutputFile(outputFile).
+		SetHeader("Accept", "application/octet-stream").
+		SetErrorResult(&errMsg).
 		Get(assetDownloadUrl)
 
 	if err != nil {
-		fmt.Println(err)
-		return false
+		return false, err
 	}
 
-	return true
+	if resp.IsErrorState() {
+		return false, errors.New(errMsg.Message)
+	}
+
+	return true, nil
 }
