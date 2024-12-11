@@ -57,11 +57,15 @@ func ResolvePackage(value string, cfg GSConfig, mustExist bool) (GSPackage, erro
 }
 
 func RunScript(assetName string, providedScript string) bool {
-	assetPath := filepath.Join(downloadPrefix, assetName)
+	var script string
 
-	script := strings.ReplaceAll(providedScript, "{{ASSET}}", assetPath)
-
-	tui.ShowBox(fmt.Sprintf("ASSET=%s\n%s", assetPath, providedScript))
+	if assetName != "" {
+		assetPath := filepath.Join(downloadPrefix, assetName)
+		script = strings.ReplaceAll(providedScript, "{{ASSET}}", assetPath)
+		tui.ShowBox(fmt.Sprintf("ASSET=%s\n%s", assetPath, providedScript))
+	} else {
+		script = providedScript
+	}
 
 	execCommand, execOption := util.GetShellExec()
 

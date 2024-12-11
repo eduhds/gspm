@@ -196,12 +196,19 @@ func CommandList(config GSConfig) {
 	}
 }
 
-func CommandRemove(cfg GSConfig, gsp GSPackage) GSConfig {
+func CommandRemove(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	var keepedPackages []GSPackage
 
 	for _, item := range cfg.Packages {
 		if item.Platform == runtime.GOOS && item.Name == gsp.Name {
-			tui.ShowInfo("Package " + item.Name + " removed")
+			if withScript {
+				if !RunScript("", gsp.Script) {
+					return cfg
+				}
+				tui.ShowInfo("Package " + item.Name + " removed with script")
+			} else {
+				tui.ShowInfo("Package " + item.Name + " removed from config")
+			}
 		} else {
 			keepedPackages = append(keepedPackages, item)
 		}
