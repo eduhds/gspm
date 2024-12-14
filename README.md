@@ -20,6 +20,7 @@ Support installing from releases with custom script.
 -   Save repository/package info for future installs.
 -   Interactive mode.
 -   Multi-platform: Windows, Linux, MacOS.
+-   Public and Private repositories
 
 ## ⬇️ Install
 
@@ -50,7 +51,7 @@ Use `gspm` to update itself:
 -   MacOS/Linux
 
 ```sh
-gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{ASSET}}'
+gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} gspm && rm {{ASSET}}'
 ```
 
 ## 📖 Usage
@@ -58,7 +59,7 @@ gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{AS
 ### CLI
 
 ```sh
-Usage: gspm [--configdir CONFIGDIR] [--script SCRIPT] [COMMAND [REPOS [REPOS ...]]]
+Usage: gspm [--configdir CONFIGDIR] [--githubtoken GITHUBTOKEN] [--script SCRIPT] [COMMAND [REPOS [REPOS ...]]]
 
 Positional arguments:
   COMMAND                Command to run. Must be add, remove, update, install, edit, info or list.
@@ -66,6 +67,7 @@ Positional arguments:
 
 Options:
   --configdir CONFIGDIR [env: GSPM_CONFIG_DIR]
+  --githubtoken GITHUBTOKEN [env: GSPM_GITHUB_TOKEN]
   --script SCRIPT, -s SCRIPT
                          Script to run after download a asset. Use {{ASSET}} to reference the asset path.
   --help, -h             display this help and exit
@@ -80,11 +82,18 @@ gspm add username/repository
 gspm add username/repository@tag
 gspm add username/repository@latest
 
-# Info, Remove, Edit or Update
+# Info, Edit or Update
 gspm info username/repository
-gspm remove username/repository
 gspm edit username/repository
 gspm update username/repository
+
+# Using inline Script
+gspm <add|update|edit> username/repository -s 'your script here'
+
+# Remove (only from ~/.config/gspm.json)
+gspm remove username/repository
+# Remove (from ~/.config/gspm.json and running script to remove from system)
+gspm remove username/repository -s 'your script here'
 
 # List
 gspm list
@@ -95,8 +104,8 @@ gspm install
 # Custom config dir path
 GSPM_CONFIG_DIR=/path/to/custom/dir gspm <command> ...
 
-# Using inline Script
-gspm <add|update|edit> username/repository -s 'your script here'
+# GitHub private repositories
+GSPM_GITHUB_TOKEN='your token here' gspm <command> <add|update>
 ```
 
 ## 🛠️ Development
