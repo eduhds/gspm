@@ -15,11 +15,11 @@ Support installing from releases with custom script.
 
 ## ✨ Features
 
-- Get asset from repository releases.
-- Run custom script to install, uncompress, move, etc.
-- Save repository/package info for future installs.
-- Interactive mode.
-- Multi-platform: Windows, Linux, MacOS.
+-   Get asset from repository releases.
+-   Run custom script to install, uncompress, move, etc.
+-   Save repository/package info for future installs.
+-   Interactive mode.
+-   Multi-platform: Windows, Linux, MacOS.
 
 ## ⬇️ Install
 
@@ -32,9 +32,9 @@ curl -sL https://dub.sh/gspm | bash
 ### Friendly installers
 
 <p>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.4/gspm-windows-amd64-setup.exe"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.4/gspm-linux-amd64.AppImage"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.1.4/gspm-macos-amd64.dmg"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.0/gspm-windows-amd64-setup.exe"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.0/gspm-linux-amd64.AppImage"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.0/gspm-macos-amd64.dmg"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
 </p>
 
 ### Installing manually
@@ -47,7 +47,7 @@ Download manually from [releases](https://github.com/eduhds/gspm/releases).
 
 Use `gspm` to update itself:
 
-- MacOS/Linux
+-   MacOS/Linux
 
 ```sh
 gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} && rm {{ASSET}}'
@@ -122,7 +122,7 @@ task build:release
 
 ## 🙏 Credits/Thanks
 
-- [alexflint/go-arg](https://github.com/alexflint/go-arg)
-- [imroc/req](https://github.com/imroc/req)
-- [pterm/pterm](https://github.com/pterm/pterm)
-- [go-task/task](https://github.com/go-task/task)
+-   [alexflint/go-arg](https://github.com/alexflint/go-arg)
+-   [imroc/req](https://github.com/imroc/req)
+-   [pterm/pterm](https://github.com/pterm/pterm)
+-   [go-task/task](https://github.com/go-task/task)
