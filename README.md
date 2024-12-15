@@ -129,6 +129,8 @@ task build:release
 
 ## 🫂 Contributing
 
+Contributions are welcome, see [Contributions Guide](./CONTRIBUTING.md) and [Code of Conduct](./CODE_OF_CONDUCT.md).
+
 ## 🙏 Credits/Thanks
 
 -   [alexflint/go-arg](https://github.com/alexflint/go-arg)
