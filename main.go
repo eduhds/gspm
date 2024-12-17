@@ -24,6 +24,8 @@ const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" 
 	"  \"Y8bbdP\"              88                              \n"
 
 var customConfigDir string = ""
+var customShellCommand string = ""
+var downloadPrefix = util.GetDownloadsDir()
 
 func (args) Version() string {
 	return fmt.Sprintf("%s v%s", appname, version)
@@ -37,8 +39,6 @@ func (args) Epilogue() string {
 	return "For more information visit https://github.com/eduhds/gspm"
 }
 
-var downloadPrefix = util.GetDownloadsDir()
-
 func main() {
 	var args args
 	arg.MustParse(&args)
@@ -50,6 +50,15 @@ func main() {
 	if args.ConfigDir != "" {
 		customConfigDir = args.ConfigDir
 		tui.ShowInfo("Using custom config directory: " + customConfigDir)
+	}
+
+	if args.ShellCommand != "" {
+		customShellCommand = strings.TrimSpace(args.ShellCommand)
+		if len(strings.Split(customShellCommand, " ")) != 2 {
+			tui.ShowError("Invalid shell command: " + customShellCommand)
+			os.Exit(1)
+		}
+		tui.ShowInfo("Using custom shell command: " + customShellCommand)
 	}
 
 	if args.Command == "" {

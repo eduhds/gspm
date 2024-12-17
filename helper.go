@@ -67,7 +67,7 @@ func RunScript(assetName string, providedScript string) bool {
 		script = providedScript
 	}
 
-	execCommand, execOption := util.GetShellExec()
+	execCommand, execOption := util.GetShellExec(customShellCommand)
 
 	cmd := exec.Command(execCommand, execOption, script)
 	cmd.Stdin = os.Stdin

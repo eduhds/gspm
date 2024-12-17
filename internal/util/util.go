@@ -5,6 +5,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -36,13 +37,19 @@ func CreateDirIfNotExists(dir string) {
 	}
 }
 
-func GetShellExec() (string, string) {
+func GetShellExec(shellCommand string) (string, string) {
 	execCommand := "/bin/sh"
 	execOption := "-c"
 
-	if runtime.GOOS == "windows" {
-		execCommand = "cmd.exe"
-		execOption = "/C"
+	if shellCommand != "" {
+		commands := strings.Split(shellCommand, " ")
+		execCommand = commands[0]
+		execOption = commands[1]
+	} else {
+		if runtime.GOOS == "windows" {
+			execCommand = "cmd.exe"
+			execOption = "/C"
+		}
 	}
 
 	return execCommand, execOption
