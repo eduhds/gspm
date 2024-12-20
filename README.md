@@ -33,9 +33,9 @@ curl -sL https://dub.sh/gspm | bash
 ### Friendly installers
 
 <p>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.0/gspm-windows-amd64-setup.exe"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.0/gspm-linux-amd64.AppImage"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.0/gspm-macos-amd64.dmg"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.1/gspm-windows-amd64-setup.exe"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.1/gspm-linux-amd64.AppImage"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.1/gspm-macos-amd64.dmg"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
 </p>
 
 ### Installing manually
