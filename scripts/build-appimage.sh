@@ -4,26 +4,26 @@ set -e
 
 appname=gspm
 version="$(git describe --tags --abbrev=0)"
-os=linux
 arch=x86_64
-output=${appname}_$version-$arch
+output=${appname}_$version-linux-$arch
 
 mkdir -p dist
 
 rm -rf dist/AppDir 2> /dev/null || true
+rm dist/*.AppImage 2> /dev/null || true
 mkdir dist/AppDir
 
 cmd="linuxdeploy \
     --appdir dist/AppDir \
-    --executable dist/${appname}_${os}_amd64*/$appname \
-    --desktop-file $os/$appname.desktop \
+    --executable dist/${appname}_linux_amd64*/$appname \
+    --desktop-file linux/$appname.desktop \
      --output appimage \
 "
 
 sizes=(16 32 64 96 128 256)
 
 for size in "${sizes[@]}"; do
-    cmd="$cmd --icon-file $os/icons/${size}x${size}/$appname.png \
+    cmd="$cmd --icon-file linux/icons/${size}x${size}/$appname.png \
 "
 done
 
