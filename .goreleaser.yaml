@@ -3,7 +3,7 @@ version: 2
 before:
   hooks:
     - go mod tidy
-    # - go generate ./...
+    - go generate
 
 builds:
   - env:
@@ -62,5 +62,5 @@ nfpms:
       - apk
       - deb
       - rpm
+      - archlinux
       # - termux.deb
-      # - archlinux
