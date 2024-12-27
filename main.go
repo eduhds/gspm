@@ -12,6 +12,8 @@ import (
 	"github.com/eduhds/gspm/internal/util"
 )
 
+//go:generate go-winres make --in windows/winres.json
+
 const appname = "gspm"
 const version = "0.2.1"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
