@@ -1,6 +1,9 @@
 version: "3"
 
 tasks:
+  build:
+    cmds:
+      - CGO_ENABLED=0 go build -ldflags "-s -w" .
   release:
     cmds:
       - rm -rf dist 2> /dev/null || true
