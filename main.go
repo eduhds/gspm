@@ -15,7 +15,7 @@ import (
 //go:generate go-winres make --in windows/winres.json
 
 const appname = "gspm"
-const version = "0.2.1"
+const version = "0.2.2"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
 const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" +
 	"a8\"    `Y88  I8[    \"\"  88P'    \"8a  88P'   \"88\"    \"8a \n" +
