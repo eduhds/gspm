@@ -3,11 +3,11 @@
 set -e
 
 appname=gspm
-version=0.2.1
+version="$(git describe --tags --abbrev=0)"
 bundle=$appname.app
 launch=launch
 identifier=com.github.eduhds.$appname
-output=$appname-macos-$(pkgx go env GOARCH)
+output=${appname}_$version-macos-x86_64
 
 mkdir -p dist
 
@@ -37,9 +37,9 @@ cat << EOF > dist/$bundle/Contents/Info.plist
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>$version</string>
+    <string>${version:1}</string>
     <key>CFBundleVersion</key>
-    <string>$version</string>
+    <string>${version:1}</string>
     <key>CFBundleIconFile</key>
     <string>$appname.icns</string>
     <key>LSUIElement</key>
@@ -71,11 +71,7 @@ EOF
 
 chmod +x dist/$bundle/Contents/MacOS/$launch
 
-cp build/darwin/amd64/release/$appname dist/$bundle/Contents/MacOS
+cp dist/${appname}_darwin_amd64*/$appname dist/$bundle/Contents/MacOS
 cp macos/$appname.icns dist/$bundle/Contents/Resources
 
 npx appdmg macos/dmg.json dist/$output.dmg
-
-cp LICENSE.txt build/darwin/amd64/release
-cp README.md build/darwin/amd64/release
-tar -C build/darwin/amd64/release -czf dist/$output.tar.gz $appname LICENSE.txt README.md

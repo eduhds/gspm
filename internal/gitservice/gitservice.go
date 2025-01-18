@@ -16,7 +16,7 @@ type ErrorMessage struct {
 }
 
 var client = req.C().
-	SetTimeout(60 * time.Second)
+	SetTimeout(10 * 60 * time.Second)
 
 var GHToken = ""
 

@@ -2,6 +2,7 @@ package util
 
 import (
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
 	"runtime"
@@ -58,3 +59,15 @@ func GetShellExec(shellCommand string) (string, string) {
 func DateLocalNow() string {
 	return time.Now().Local().Format(time.RFC3339)
 }
+
+func ClearScreen() {
+	cmd := exec.Command("clear")
+
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/c", "cls")
+	}
+
+	cmd.Stdout = os.Stdout
+	_ = cmd.Run()
+}
+

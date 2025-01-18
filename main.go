@@ -12,6 +12,8 @@ import (
 	"github.com/eduhds/gspm/internal/util"
 )
 
+//go:generate go-winres make --in windows/winres.json
+
 const appname = "gspm"
 const version = "0.2.1"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
@@ -63,13 +65,15 @@ func main() {
 
 	if args.Command == "" {
 		// Interactive mode
-		tui.TextInfo(asciiArt)
-		tui.ShowInfo(fmt.Sprintf("v%s", version))
-		tui.ShowLine()
+		util.ClearScreen()
 
 		quit := false
 
 		for !quit {
+			tui.TextInfo(asciiArt)
+			tui.ShowInfo(fmt.Sprintf("v%s", version))
+			tui.ShowLine()
+
 			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "info", "list", "<cancel>"})
 
 			if option == "<cancel>" {
@@ -101,6 +105,8 @@ func main() {
 			if quit {
 				tui.TextSuccess(description)
 				tui.ShowLine()
+			} else {
+				util.ClearScreen()
 			}
 		}
 
