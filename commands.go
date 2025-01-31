@@ -189,7 +189,7 @@ func CommandList(config GSConfig) {
 	tui.ShowLine()
 
 	for _, item := range platformPackages {
-		tui.ShowMessage("📦 " + item.Name + "@" + item.Tag)
+		tui.TextInfo("📦 " + item.Name + "@" + item.Tag)
 		tui.ShowMessage("🔗 " + item.AssetUrl)
 		tui.ShowMessage("🛠️  " + item.Script)
 		tui.ShowLine()
