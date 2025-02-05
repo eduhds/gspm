@@ -185,10 +185,8 @@ func main() {
 				}
 			}
 
-			if args.Command == "add" {
+			if args.Command == "add" || args.Command == "update" {
 				config = CommandAdd(config, targetPackage)
-			} else if args.Command == "update" {
-				config = CommandUpdate(config, targetPackage)
 			} else if args.Command == "remove" {
 				config = CommandRemove(config, targetPackage, withScript)
 			} else if args.Command == "edit" {

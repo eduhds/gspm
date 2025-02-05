@@ -34,19 +34,19 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 	var assetOptions []string
 
 	for _, release := range releases {
-		if tag == "" {
-			if gsp.Tag == release.TagName {
-				tag = release.TagName
-			}
-			tagOptions = append(tagOptions, release.TagName)
-		}
+		//if tag == "" {
+		//	if gsp.Tag == release.TagName {
+		//		tag = release.TagName
+		//	}
+		tagOptions = append(tagOptions, release.TagName)
+		//}
 		assets[release.TagName] = release.Assets
 	}
 
-	if tag == "" {
-		tag = tui.ShowOptions("Select a tag", tagOptions)
-		gsp.Tag = tag
-	}
+	//if tag == "" {
+	tag = tui.ShowOptions("Select a tag", tagOptions)
+	gsp.Tag = tag
+	//}
 
 	if len(assets[tag]) == 0 {
 		tui.ShowInfo("No assets found for " + gsp.Name + "@" + tag)
@@ -219,6 +219,7 @@ func CommandRemove(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	return cfg
 }
 
+// Deprecated: Use CommandAdd instead
 func CommandUpdate(cfg GSConfig, gsp GSPackage) GSConfig {
 	var assetName = AssetNameFromUrl(gsp.AssetUrl)
 
