@@ -24,6 +24,10 @@ func PlatformPackages(config GSConfig) []GSPackage {
 	return packages
 }
 
+func IsValidPackageName(name string) bool {
+	return len(strings.Split(name, "/")) == 2
+}
+
 func ResolvePackage(value string, cfg GSConfig, mustExist bool) (GSPackage, error) {
 	packages := PlatformPackages(cfg)
 
@@ -31,10 +35,6 @@ func ResolvePackage(value string, cfg GSConfig, mustExist bool) (GSPackage, erro
 	name := info[0]
 	tag := ""
 	platform := runtime.GOOS
-
-	if len(strings.Split(name, "/")) != 2 {
-		return GSPackage{}, errors.New("Invalid package name: " + name)
-	}
 
 	if len(info) > 1 {
 		tag = info[1]

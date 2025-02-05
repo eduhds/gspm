@@ -141,10 +141,38 @@ func main() {
 				tui.ShowLine()
 			}
 
-			gsp, err := ResolvePackage(value, config, mustExist)
+			var targetPackage GSPackage
+			targetPackage.Name = value
 
-			if err != nil {
-				tui.ShowError(err.Error())
+			if !IsValidPackageName(targetPackage.Name) {
+				tui.ShowError("Invalid package name: " + targetPackage.Name)
+				continue
+			}
+
+			for {
+				gsp, err := ResolvePackage(targetPackage.Name, config, mustExist)
+
+				if err != nil {
+					tui.ShowError(err.Error())
+
+					if mustExist && len(PlatformPackages(config)) > 0 {
+						var knownPackages []string
+						for _, item := range PlatformPackages(config) {
+							knownPackages = append(knownPackages, item.Name)
+						}
+						targetPackage.Name = tui.ShowOptions("Select a package", knownPackages)
+						continue
+					} else {
+						targetPackage = GSPackage{}
+						break
+					}
+				} else {
+					targetPackage = gsp
+					break
+				}
+			}
+
+			if targetPackage.Name == "" {
 				continue
 			}
 
@@ -153,20 +181,20 @@ func main() {
 
 			if supportScript {
 				if withScript {
-					gsp.Script = args.Scripts[index]
+					targetPackage.Script = args.Scripts[index]
 				}
 			}
 
 			if args.Command == "add" {
-				config = CommandAdd(config, gsp)
+				config = CommandAdd(config, targetPackage)
 			} else if args.Command == "update" {
-				config = CommandUpdate(config, gsp)
+				config = CommandUpdate(config, targetPackage)
 			} else if args.Command == "remove" {
-				config = CommandRemove(config, gsp, withScript)
+				config = CommandRemove(config, targetPackage, withScript)
 			} else if args.Command == "edit" {
-				config = CommandEdit(config, gsp, withScript)
+				config = CommandEdit(config, targetPackage, withScript)
 			} else if args.Command == "info" {
-				CommandInfo(gsp)
+				CommandInfo(targetPackage)
 			}
 		}
 
