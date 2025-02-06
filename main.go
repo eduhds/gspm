@@ -74,7 +74,7 @@ func main() {
 			tui.ShowInfo(fmt.Sprintf("v%s", version))
 			tui.ShowLine()
 
-			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "info", "list", "<cancel>"})
+			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "install", "edit", "info", "list", "<cancel>"})
 
 			if option == "<cancel>" {
 				quit = true

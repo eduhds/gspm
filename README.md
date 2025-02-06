@@ -53,14 +53,16 @@ gspm add eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} gspm && rm {{
 ### CLI
 
 ```sh
-Usage: gspm [--configdir CONFIGDIR] [--githubtoken GITHUBTOKEN] [--script SCRIPT] [COMMAND [REPOS [REPOS ...]]]
+gspm v0.2.2
+Usage: gspm [--configdir CONFIGDIR] [--shellcommand SHELLCOMMAND] [--githubtoken GITHUBTOKEN] [--script SCRIPT] [COMMAND [REPOS [REPOS ...]]]
 
 Positional arguments:
-  COMMAND                Command to run. Must be add, remove, update, install, edit, info or list.
+  COMMAND                Command to run. Must be add, remove, install, edit, info or list.
   REPOS                  Repos from Git Services (GitHub supported only for now). Format: username/repository
 
 Options:
   --configdir CONFIGDIR [env: GSPM_CONFIG_DIR]
+  --shellcommand SHELLCOMMAND [env: GSPM_SHELL_COMMAND]
   --githubtoken GITHUBTOKEN [env: GSPM_GITHUB_TOKEN]
   --script SCRIPT, -s SCRIPT
                          Script to run after download a asset. Use {{ASSET}} to reference the asset path.
