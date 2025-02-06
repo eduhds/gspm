@@ -3,7 +3,7 @@ package util
 import (
 	"os"
 	"os/exec"
-	"os/user"
+	//"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -11,8 +11,14 @@ import (
 )
 
 func GetHomeDir() string {
-	u, _ := user.Current()
-	return u.HomeDir
+	//u, _ := user.Current()
+	//return u.HomeDir
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		exe, _ := os.Executable()
+		return filepath.Dir(exe)
+	}
+	return dir
 }
 
 func GetConfigDir(overrideDir string) string {
