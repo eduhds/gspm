@@ -24,34 +24,28 @@ Support installing from releases with custom script.
 
 ## ⬇️ Install
 
+<p>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.2/gspm_Windows_x86_64.zip"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.2/gspm_Linux_x86_64.tar.gz"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.2/gspm_Darwin_x86_64.tar.gz"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
+</p>
+
 ### MacOS/Linux (recommended)
 
 ```sh
 curl -sL https://dub.sh/gspm | bash
 ```
 
-### Friendly installers
-
-<p>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.2/gspm-windows-amd64-setup.exe"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.2/gspm-linux-amd64.AppImage"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.2/gspm-macos-amd64.dmg"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
-</p>
-
 ### Installing manually
-
-#### First time
 
 Download manually from [releases](https://github.com/eduhds/gspm/releases).
 
-#### Already have `gspm` installed
-
-Use `gspm` to update itself:
+### Use `gspm` to update itself:
 
 -   MacOS/Linux
 
 ```sh
-gspm update eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} gspm && rm {{ASSET}}'
+gspm add eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} gspm && rm {{ASSET}}'
 ```
 
 ## 📖 Usage
@@ -82,13 +76,12 @@ gspm add username/repository
 gspm add username/repository@tag
 gspm add username/repository@latest
 
-# Info, Edit or Update
+# Info, Edit
 gspm info username/repository
 gspm edit username/repository
-gspm update username/repository
 
 # Using inline Script
-gspm <add|update|edit> username/repository -s 'your script here'
+gspm <add|edit> username/repository -s 'your script here'
 
 # Remove (only from ~/.config/gspm.json)
 gspm remove username/repository
@@ -105,7 +98,7 @@ gspm install
 GSPM_CONFIG_DIR=/path/to/custom/dir gspm <command> ...
 
 # GitHub private repositories
-GSPM_GITHUB_TOKEN='your token here' gspm <command> <add|update>
+GSPM_GITHUB_TOKEN='your token here' gspm add username/repository
 ```
 
 ## 🛠️ Development
