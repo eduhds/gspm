@@ -23,7 +23,7 @@ EOF
 
 printf "$COLLOR_OFF"
 
-version=0.2.2
+version=0.2.3
 os=$(uname -s)
 arch=x86_64
 url=https://github.com/eduhds/gspm/releases/download/v$version/gspm_${os}_$arch.tar.gz
@@ -51,5 +51,6 @@ if [ $? -ne 0 ]; then
     echo "See https://github.com/eduhds/gspm for more information."
     exit 1
 else
+    gspm --version
     echo '✅ gspm installed successfully!'
 fi
