@@ -63,4 +63,4 @@ nfpms:
       - deb
       - rpm
       - archlinux
-      # - termux.deb
+      - termux.deb

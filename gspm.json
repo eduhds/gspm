@@ -29,11 +29,11 @@
         },
         {
             "Name": "eduhds/gspm",
-            "Tag": "v0.1.4",
-            "AssetUrl": "https://api.github.com/repos/eduhds/gspm/releases/assets/211926643",
+            "Tag": "v0.2.2",
+            "AssetUrl": "https://api.github.com/repos/eduhds/gspm/releases/assets/221394532",
             "Script": "mv {{ASSET}} .",
             "Platform": "linux",
-            "LastModfied": "2024-12-10T15:49:38-03:00"
+            "LastModfied": "2025-02-05T23:45:55Z"
         }
     ]
 }

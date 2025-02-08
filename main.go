@@ -15,7 +15,7 @@ import (
 //go:generate go-winres make --in windows/winres.json
 
 const appname = "gspm"
-const version = "0.2.2"
+const version = "0.2.3"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
 const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" +
 	"a8\"    `Y88  I8[    \"\"  88P'    \"8a  88P'   \"88\"    \"8a \n" +
@@ -74,7 +74,7 @@ func main() {
 			tui.ShowInfo(fmt.Sprintf("v%s", version))
 			tui.ShowLine()
 
-			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "update", "install", "edit", "info", "list", "<cancel>"})
+			option := tui.ShowOptions("What command do you want to use?", []string{"add", "remove", "install", "edit", "info", "list", "<cancel>"})
 
 			if option == "<cancel>" {
 				quit = true
@@ -141,10 +141,38 @@ func main() {
 				tui.ShowLine()
 			}
 
-			gsp, err := ResolvePackage(value, config, mustExist)
+			var targetPackage GSPackage
+			targetPackage.Name = value
 
-			if err != nil {
-				tui.ShowError(err.Error())
+			if !IsValidPackageName(targetPackage.Name) {
+				tui.ShowError("Invalid package name: " + targetPackage.Name)
+				continue
+			}
+
+			for {
+				gsp, err := ResolvePackage(targetPackage.Name, config, mustExist)
+
+				if err != nil {
+					tui.ShowError(err.Error())
+
+					if mustExist && len(PlatformPackages(config)) > 0 {
+						var knownPackages []string
+						for _, item := range PlatformPackages(config) {
+							knownPackages = append(knownPackages, item.Name)
+						}
+						targetPackage.Name = tui.ShowOptions("Select a package", knownPackages)
+						continue
+					} else {
+						targetPackage = GSPackage{}
+						break
+					}
+				} else {
+					targetPackage = gsp
+					break
+				}
+			}
+
+			if targetPackage.Name == "" {
 				continue
 			}
 
@@ -153,20 +181,18 @@ func main() {
 
 			if supportScript {
 				if withScript {
-					gsp.Script = args.Scripts[index]
+					targetPackage.Script = args.Scripts[index]
 				}
 			}
 
-			if args.Command == "add" {
-				config = CommandAdd(config, gsp)
-			} else if args.Command == "update" {
-				config = CommandUpdate(config, gsp)
+			if args.Command == "add" || args.Command == "update" {
+				config = CommandAdd(config, targetPackage)
 			} else if args.Command == "remove" {
-				config = CommandRemove(config, gsp, withScript)
+				config = CommandRemove(config, targetPackage, withScript)
 			} else if args.Command == "edit" {
-				config = CommandEdit(config, gsp, withScript)
+				config = CommandEdit(config, targetPackage, withScript)
 			} else if args.Command == "info" {
-				CommandInfo(gsp)
+				CommandInfo(targetPackage)
 			}
 		}
 
