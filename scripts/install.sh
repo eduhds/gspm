@@ -52,5 +52,6 @@ if [ $? -ne 0 ]; then
     exit 1
 else
     gspm --version
+    echo ""
     echo '✅ gspm installed successfully!'
 fi
