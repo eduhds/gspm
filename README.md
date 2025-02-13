@@ -30,22 +30,22 @@ Support installing from releases with custom script.
   <a href="https://github.com/eduhds/gspm/releases/download/v0.2.3/gspm_Darwin_x86_64.tar.gz"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
 </p>
 
-### MacOS/Linux (recommended)
-
-```sh
-curl -sL https://dub.sh/gspm | bash
-```
-
 ### Installing manually
 
 Download manually from [releases](https://github.com/eduhds/gspm/releases).
 
-### Use `gspm` to update itself:
+### Install script
 
--   MacOS/Linux
+#### MacOS/Linux
 
 ```sh
-gspm add eduhds/gspm -s 'sudo tar -C /usr/local/bin -xzf {{ASSET}} gspm && rm {{ASSET}}'
+curl -sL https://dub.sh/gspm.sh | bash
+```
+
+#### Windows
+
+```powershell
+powershell -c "irm https://dub.sh/gspm.ps1 | iex"
 ```
 
 ## 📖 Usage
