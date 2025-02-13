@@ -1,3 +1,8 @@
+# Install gspm on Windows
+# Command:
+# powershell -c "irm https://dub.sh/gspm.ps1 | iex"
+# ------------------------------------------------
+
 Write-Host "Installing gspm..."
 
 $appVersion = "0.2.3"
@@ -15,7 +20,7 @@ if (!(Test-Path $targetDir)) {
 # ------------------------------------------------
 
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
-$userPath >> C:\Path.bkp.txt
+$userPath >> C:\Path_Before_gspm.bkp.txt
 
 # Current session
 $env:Path += ";$targetDir"
