@@ -22,12 +22,14 @@ if (!(Test-Path $targetDir)) {
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 $userPath >> C:\Path_Before_gspm.bkp.txt
 
-# Current session
-$env:Path += ";$targetDir"
+if (!($userPath -Match $targetDir)) {
+    # Current session
+    $env:Path += ";$targetDir"
 
-# Permanent
-$userPath += ";$targetDir"
-[Environment]::SetEnvironmentVariable("Path", $userPath, "User")
+    # Permanent
+    $userPath += ";$targetDir"
+    [Environment]::SetEnvironmentVariable("Path", $userPath, "User")   
+}
 
 # Download gspm
 # ------------------------------------------------
