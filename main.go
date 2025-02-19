@@ -63,6 +63,8 @@ func main() {
 		tui.ShowInfo("Using custom shell command: " + customShellCommand)
 	}
 
+	config := ResolveConfig()
+
 	if args.Command == "" {
 		// Interactive mode
 		util.ClearScreen()
@@ -82,7 +84,21 @@ func main() {
 				repo := ""
 
 				if option != "list" && option != "install" {
-					repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
+					var knownPackages []string
+					for _, item := range PlatformPackages(config) {
+						knownPackages = append(knownPackages, item.Name)
+					}
+
+					if len(knownPackages) > 0 {
+						knownPackages = append(knownPackages, "other")
+						repo = tui.ShowOptions("Select a package", knownPackages)
+					} else {
+						repo = "other"
+					}
+
+					if repo == "other" {
+						repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
+					}
 				}
 
 				program := strings.TrimSpace(strings.Join(os.Args, " "))
@@ -116,8 +132,6 @@ func main() {
 	// Non-interactive mode
 	tui.ShowInfo(fmt.Sprintf("%s v%s", appname, version))
 	tui.ShowLine()
-
-	config := ResolveConfig()
 
 	switch args.Command {
 	case "list":
