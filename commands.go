@@ -119,7 +119,9 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 func CommandEdit(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	tui.ShowWarning("Editing script for package " + gsp.Name)
 
-	if !withScript {
+	if withScript {
+		tui.ShowMessage(gsp.Script)
+	} else {
 		tui.ShowInfo("Use {{ASSET}} to reference the asset path")
 		script := tui.ShowTextInput("Enter a script", true, gsp.Script)
 		gsp.Script = script
