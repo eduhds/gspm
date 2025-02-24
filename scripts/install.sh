@@ -23,10 +23,10 @@ EOF
 
 printf "$COLLOR_OFF"
 
-version=0.2.4
+version=v0.2.4
 os=$(uname -s)
 arch=x86_64
-url=https://github.com/eduhds/gspm/releases/download/v$version/gspm_${os}_$arch.tar.gz
+url=https://github.com/eduhds/gspm/releases/download/${version}/gspm_${version}_${os}_${arch}.tar.gz
 
 echo "📦 Installing gspm..."
 echo ""

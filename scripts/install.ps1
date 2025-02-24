@@ -5,7 +5,7 @@
 
 Write-Host "Installing gspm..."
 
-$appVersion = "0.2.4"
+$appVersion = "v0.2.4"
 
 # Setup directory
 # ------------------------------------------------
@@ -34,8 +34,8 @@ if (!($userPath -Match $targetDir)) {
 # Download gspm
 # ------------------------------------------------
 
-$appFile = "gspm_Windows_x86_64.zip"
-$appUrl = "https://github.com/eduhds/gspm/releases/download/v$appVersion/$appFile"
+$appFile = "gspm_" + $appVersion + "_Windows_x86_64.zip"
+$appUrl = "https://github.com/eduhds/gspm/releases/download/$appVersion/$appFile"
 Invoke-WebRequest $appUrl -OutFile $appFile
 
 if (Test-Path $appFile) {
