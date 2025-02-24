@@ -25,9 +25,9 @@ Support installing from releases with custom script.
 ## ⬇️ Install
 
 <p>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.3/gspm_Windows_x86_64.zip"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.3/gspm_Linux_x86_64.tar.gz"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
-  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.3/gspm_Darwin_x86_64.tar.gz"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_Windows_x86_64.zip"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_Linux_x86_64.tar.gz"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
+  <a href="https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_Darwin_x86_64.tar.gz"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
 </p>
 
 ### Installing manually

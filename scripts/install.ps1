@@ -5,7 +5,7 @@
 
 Write-Host "Installing gspm..."
 
-$appVersion = "0.2.3"
+$appVersion = "0.2.4"
 
 # Setup directory
 # ------------------------------------------------
