@@ -6,6 +6,7 @@ toolchain go1.22.5
 
 require (
 	github.com/alexflint/go-arg v1.5.1
+	github.com/google/go-github/v69 v69.2.0
 	github.com/imroc/req/v3 v3.48.0
 	github.com/pterm/pterm v0.12.80
 )
@@ -19,6 +20,7 @@ require (
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/containerd/console v1.0.4 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/pprof v0.0.0-20241206021119-61a79c692802 // indirect
 	github.com/gookit/color v1.5.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
