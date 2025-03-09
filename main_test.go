@@ -1,25 +1,33 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/eduhds/gspm/internal/gitservice"
 )
 
+const (
+	username string = "eduhds"
+	repository string = "gspm"
+)
+
 func TestGitHubReleases(t *testing.T) {
-	username := "eduhds"
-	repository := "gspm"
 	releases, err := gitservice.GitHubReleases(username, repository)
+
 	if err != nil {
 		t.Fatal(err)
 	}
-fmt.Println(releases)
+
+    if len(releases) == 0 {
+		t.Fatal("No releases found")
+	}
+
+	if releases[0].TagName != "v" + version {
+		t.Fatal("No release found for version " + version)
+	}
 }
 
 func TestGitHubReleaseAssets(t *testing.T) {
-	username := "eduhds"
-	repository := "gspm"
 	releases, err := gitservice.GitHubReleases(username, repository)
 
 	assets, err := gitservice.GitHubReleaseAssets(username, repository, releases[len(releases)-1].Id)
@@ -28,6 +36,24 @@ func TestGitHubReleaseAssets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-fmt.Println(assets)
+	if len(assets) == 0 {
+		t.Fatal("No assets found")
+	}
+}
+
+func TestGitHubDownloadAsset(t *testing.T) {
+	releases, err := gitservice.GitHubReleases(username, repository)
+
+	assets, err := gitservice.GitHubReleaseAssets(username, repository, releases[0].Id)
+
+	downlod, err := gitservice.GitHubReleaseAssetDownload(username, repository, assets[0].Id, assets[0].Name)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !downlod {
+		t.Fatal("Asset not downloaded")
+	}
 }
 

@@ -2,7 +2,6 @@ package gitservice
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/go-github/v69/github"
 )
@@ -15,8 +14,6 @@ func GitHubReleases(username string, repository string) ([]GSGitHubRelease, erro
 	var gsGitHubReleases []GSGitHubRelease
 
 	for _, release := range releases {
-		fmt.Println(*release.TagName)
-
 		gsGitHubReleases = append(gsGitHubReleases, GSGitHubRelease{
 			Url:             *release.URL,
 			AssetsUrl:       *release.AssetsURL,
@@ -46,7 +43,7 @@ func GitHubReleaseAssets(username string, repository string, id int64) ([]GSGitH
 	for _, asset := range assets {
 		gsGitHubReleaseAssets = append(gsGitHubReleaseAssets, GSGitHubReleaseAsset{
 			Url:                *asset.URL,
-			//Id:                 *asset.ID,
+			Id:                 *asset.ID,
 			//NodeId:             *asset.NodeID,
 			Name:               *asset.Name,
 			//Label:              *asset.Label,
@@ -61,5 +58,19 @@ func GitHubReleaseAssets(username string, repository string, id int64) ([]GSGitH
 	}
 
 	return gsGitHubReleaseAssets, err
+}
+
+func GitHubReleaseAssetDownload(username string, repository string, id int64, name string) (bool, error) {
+	client := github.NewClient(nil)
+
+	_, url, err := client.Repositories.DownloadReleaseAsset(context.Background(), username, repository, id, nil)
+
+	if err != nil {
+		return false, err
+	}
+
+    res, err := GetGitHubReleaseAsset(name, url)
+
+	return res, err
 }
 
