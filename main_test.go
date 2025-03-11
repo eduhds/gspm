@@ -57,3 +57,45 @@ func TestGitHubDownloadAsset(t *testing.T) {
 	}
 }
 
+func TestGitLabReleases(t *testing.T) {
+	releases, err := gitservice.GitLabReleases("Inkscape", "inkscape")
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(releases) == 0 {
+		t.Fatal("No releases found")
+	}
+}
+
+func TestGitLabReleaseAssets(t *testing.T) {
+	releases, err := gitservice.GitLabReleases("Inkscape", "inkscape")
+
+	assets, err := gitservice.GitLabReleaseAssets("Inkscape", "inkscape", releases[0].TagName)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(assets) == 0 {
+		t.Fatal("No assets found")
+	}
+}
+
+func TestGitLabDownloadAsset(t *testing.T) {
+	releases, err := gitservice.GitLabReleases("Inkscape", "inkscape")
+
+	assets, err := gitservice.GitLabReleaseAssets("Inkscape", "inkscape", releases[0].TagName)
+
+	downlod, err := gitservice.GitLabReleaseAssetDownload(assets[0].Url, assets[0].Name)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !downlod {
+		t.Fatal("Asset not downloaded")
+	}
+}
+
