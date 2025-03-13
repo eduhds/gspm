@@ -5,7 +5,7 @@ set -e
 appname=gspm
 version="$(git describe --tags --abbrev=0)"
 arch=x86_64
-output=${appname}_$version-linux-$arch
+output=${appname}_${version}_Linux_${arch}
 
 mkdir -p dist
 
