@@ -81,3 +81,37 @@ func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) (bool, err
 
 	return true, nil
 }
+
+func GSGetReleases(url string, token string) (any, error) {
+	var releases any
+	var errMsg ErrorMessage
+
+	cr := client.R()
+
+	if token != "" {
+		cr.SetHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+
+	resp, err := cr.
+		SetSuccessResult(&releases).
+		SetErrorResult(&errMsg).
+		EnableDump().
+		Get(url)
+
+	if err != nil { // Error handling.
+		return nil, err
+	}
+
+	if resp.IsErrorState() { // Status code >= 400.
+		return nil, errors.New(errMsg.Message)
+	}
+
+	if resp.IsSuccessState() { // Status code is between 200 and 299.
+		return releases, nil
+	}
+
+	// Unknown status code.
+	return nil, errors.New("Unknown status: " + resp.Status)
+}
+
+

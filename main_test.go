@@ -13,7 +13,11 @@ const (
 	repository string = "gspm"
 )
 
-func TestGitHubReleases(t *testing.T) {
+/*
+ * GITHUB TESTS
+ */
+
+ func TestGitHubReleases(t *testing.T) {
 	releases, err := gitservice.GitHubReleases(username, repository)
 
 	if err != nil {
@@ -84,6 +88,10 @@ func TestGitHubDownloadAsset(t *testing.T) {
 	}
 }
 
+/*
+ * GITLAB TESTS
+ */
+
 func TestGitLabReleases(t *testing.T) {
 	releases, err := gitservice.GitLabReleases(username, repository)
 
@@ -150,3 +158,20 @@ func TestGitLabDownloadAsset(t *testing.T) {
 		t.Fatal("Asset not downloaded")
 	}
 }
+
+/*
+ * BITBUCKET TESTS
+ */
+
+func TestBitbucketReleases(t *testing.T) {
+	releases, err := gitservice.BitbucketReleases(username, repository)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(releases) == 0 {
+		t.Fatal("No releases found")
+	}
+}
+
