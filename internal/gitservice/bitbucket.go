@@ -19,36 +19,20 @@ func BitbucketReleases(username string, repository string) ([]GSRelease, error) 
 	var gsReleases []GSRelease
 
 	for _, release := range releases.Values {
+		var gsReleaseAssets []GSReleaseAsset
+
+		gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
+			Url:  release.Links.Self.Href,
+			Name: release.Name,
+		})
+
 		gsReleases = append(gsReleases, GSRelease{
 			TagName: release.Name,
+			Assets:  gsReleaseAssets,
 		})
 	}
 
 	return gsReleases, nil
-}
-
-func BitbucketReleaseAssets(username string, repository string, tagName string) ([]GSReleaseAsset, error) {
-	url := fmt.Sprintf("https://api.bitbucket.org/2.0/repositories/%s/%s/downloads", username, repository)
-
-	var releases BitbucketResponse
-	_, err := GSGetReleases(url, BBToken, &releases)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var gsReleaseAssets []GSReleaseAsset
-
-	for _, release := range releases.Values {
-		if release.Name == tagName {
-			gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
-				Url:  release.Links.Self.Href,
-				Name: release.Name,
-			})
-		}
-	}
-
-	return gsReleaseAssets, nil
 }
 
 func BitbucketReleaseAssetDownload(url string, name string) (bool, error) {

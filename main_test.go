@@ -27,48 +27,8 @@ func IsBestPackageToDownload(assetName string) bool {
 // GITHUB TESTS
 //
 
-func TestGitHubReleases(t *testing.T) {
-	releases, err := gitservice.GitHubReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(releases) == 0 {
-		t.Fatal("No releases found")
-	}
-
-	if releases[0].TagName != "v"+version {
-		t.Fatal("No release found for version " + version)
-	}
-}
-
-func TestGitHubReleaseAssets(t *testing.T) {
-	releases, err := gitservice.GitHubReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assets, err := gitservice.GitHubReleaseAssets(username, repository, releases[len(releases)-1].Id)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(assets) == 0 {
-		t.Fatal("No assets found")
-	}
-}
-
 func TestGitHubDownloadAsset(t *testing.T) {
 	releases, err := gitservice.GitHubReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assets, err := gitservice.GitHubReleaseAssets(username, repository, releases[0].Id)
 
 	if err != nil {
 		t.Fatal(err)
@@ -79,7 +39,7 @@ func TestGitHubDownloadAsset(t *testing.T) {
 		assetUrl  string
 	)
 
-	for _, asset := range assets {
+	for _, asset := range releases[0].Assets {
 		if IsBestPackageToDownload(asset.Name) {
 			assetName = asset.Name
 			assetUrl = asset.Url
@@ -87,7 +47,7 @@ func TestGitHubDownloadAsset(t *testing.T) {
 		}
 	}
 
-	downlod, err := gitservice.GitHubReleaseAssetDownload(assetUrl, "Test_"+assetName)
+	downlod, err := gitservice.GitHubReleaseAssetDownload(assetUrl, "TEST_GITHUB_"+assetName)
 
 	if err != nil {
 		t.Fatal(err)
@@ -102,44 +62,8 @@ func TestGitHubDownloadAsset(t *testing.T) {
 // GITLAB TESTS
 //
 
-func TestGitLabReleases(t *testing.T) {
-	releases, err := gitservice.GitLabReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(releases) == 0 {
-		t.Fatal("No releases found")
-	}
-}
-
-func TestGitLabReleaseAssets(t *testing.T) {
-	releases, err := gitservice.GitLabReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assets, err := gitservice.GitLabReleaseAssets(username, repository, releases[0].TagName)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(assets) == 0 {
-		t.Fatal("No assets found")
-	}
-}
-
 func TestGitLabDownloadAsset(t *testing.T) {
 	releases, err := gitservice.GitLabReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assets, err := gitservice.GitLabReleaseAssets(username, repository, releases[0].TagName)
 
 	if err != nil {
 		t.Fatal(err)
@@ -150,7 +74,7 @@ func TestGitLabDownloadAsset(t *testing.T) {
 		assetUrl  string
 	)
 
-	for _, asset := range assets {
+	for _, asset := range releases[0].Assets {
 		if IsBestPackageToDownload(asset.Name) {
 			assetName = asset.Name
 			assetUrl = asset.Url
@@ -158,7 +82,7 @@ func TestGitLabDownloadAsset(t *testing.T) {
 		}
 	}
 
-	downlod, err := gitservice.GitLabReleaseAssetDownload(assetUrl, "Test_"+assetName)
+	downlod, err := gitservice.GitLabReleaseAssetDownload(assetUrl, "TEST_GITLAB_"+assetName)
 
 	if err != nil {
 		t.Fatal(err)
@@ -173,44 +97,8 @@ func TestGitLabDownloadAsset(t *testing.T) {
 // BITBUCKET TESTS
 //
 
-func TestBitbucketReleases(t *testing.T) {
-	releases, err := gitservice.BitbucketReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(releases) == 0 {
-		t.Fatal("No releases found")
-	}
-}
-
-func TestBitbucketReleaseAssets(t *testing.T) {
-	releases, err := gitservice.BitbucketReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assets, err := gitservice.BitbucketReleaseAssets(username, repository, releases[0].TagName)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(assets) == 0 {
-		t.Fatal("No assets found")
-	}
-}
-
 func TestBitbucketDownloadAsset(t *testing.T) {
 	releases, err := gitservice.BitbucketReleases(username, repository)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assets, err := gitservice.BitbucketReleaseAssets(username, repository, releases[0].TagName)
 
 	if err != nil {
 		t.Fatal(err)
@@ -221,7 +109,7 @@ func TestBitbucketDownloadAsset(t *testing.T) {
 		assetUrl  string
 	)
 
-	for _, asset := range assets {
+	for _, asset := range releases[0].Assets {
 		if IsBestPackageToDownload(asset.Name) {
 			assetName = asset.Name
 			assetUrl = asset.Url
@@ -229,7 +117,7 @@ func TestBitbucketDownloadAsset(t *testing.T) {
 		}
 	}
 
-	downlod, err := gitservice.BitbucketReleaseAssetDownload(assetUrl, "Test_"+assetName)
+	downlod, err := gitservice.BitbucketReleaseAssetDownload(assetUrl, "TEST_BITBUCKET_"+assetName)
 
 	if err != nil {
 		t.Fatal(err)

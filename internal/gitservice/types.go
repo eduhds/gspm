@@ -12,6 +12,10 @@ type GSReleaseAsset struct {
 	Name string
 }
 
+type ErrorMessage struct {
+	Message string `json:"message"`
+}
+
 //
 // GITHUB
 //

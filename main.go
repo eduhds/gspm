@@ -25,28 +25,43 @@ const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" 
 	" aa,    ,88             88                              \n" +
 	"  \"Y8bbdP\"              88                              \n"
 
-var customConfigDir string = ""
-var customShellCommand string = ""
-var downloadPrefix = util.GetDownloadsDir()
+var (
+	service            string = "github"
+	customConfigDir    string = ""
+	customShellCommand string = ""
+	downloadPrefix            = util.GetDownloadsDir()
+)
 
-func (args) Version() string {
+func (CliArgs) Version() string {
 	return fmt.Sprintf("%s v%s", appname, version)
 }
 
-func (args) Description() string {
+func (CliArgs) Description() string {
 	return description
 }
 
-func (args) Epilogue() string {
+func (CliArgs) Epilogue() string {
 	return "For more information visit https://github.com/eduhds/gspm"
 }
 
 func main() {
-	var args args
+	var args CliArgs
 	arg.MustParse(&args)
 
-	if args.GitHubToken != "" {
+	if args.Service != "" {
+		service = args.Service
+	}
+
+	if service == "github" && args.GitHubToken != "" {
 		gitservice.GHToken = args.GitHubToken
+	}
+
+	if service == "gitlab" && args.GitLabToken != "" {
+		gitservice.GLToken = args.GitLabToken
+	}
+
+	if service == "bitbucket" && args.BitbucketToken != "" {
+		gitservice.BBToken = args.BitbucketToken
 	}
 
 	if args.ConfigDir != "" {

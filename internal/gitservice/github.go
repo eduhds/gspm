@@ -16,31 +16,24 @@ func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 	var gsReleases []GSRelease
 
 	for _, release := range releases {
+		var gsReleaseAssets []GSReleaseAsset
+
+		for _, asset := range release.Assets {
+			gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
+				Url:  *asset.URL,
+				Id:   *asset.ID,
+				Name: *asset.Name,
+			})
+		}
+
 		gsReleases = append(gsReleases, GSRelease{
 			Id:      *release.ID,
 			TagName: *release.TagName,
+			Assets:  gsReleaseAssets,
 		})
 	}
 
 	return gsReleases, err
-}
-
-func GitHubReleaseAssets(username string, repository string, id int64) ([]GSReleaseAsset, error) {
-	client := github.NewClient(nil)
-
-	assets, _, err := client.Repositories.ListReleaseAssets(context.Background(), username, repository, id, nil)
-
-	var gsReleaseAssets []GSReleaseAsset
-
-	for _, asset := range assets {
-		gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
-			Url:  *asset.URL,
-			Id:   *asset.ID,
-			Name: *asset.Name,
-		})
-	}
-
-	return gsReleaseAssets, err
 }
 
 func GitHubReleaseAssetDownload( /* username string, repository string, id int64, */ url string, name string) (bool, error) {
