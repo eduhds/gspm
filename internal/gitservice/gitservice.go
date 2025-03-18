@@ -18,8 +18,7 @@ type ErrorMessage struct {
 var client = req.C().
 	SetTimeout(10 * 60 * time.Second)
 
-var GHToken = ""
-
+// Deprecated: Use sepcific service function
 func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 	var username string = strings.Split(packageName, "/")[0]
 	var repository string = strings.Split(packageName, "/")[1]
@@ -56,6 +55,7 @@ func GetGitHubReleases(packageName string) ([]GSGitHubRelease, error) {
 	return nil, errors.New("Unknown status: " + resp.Status)
 }
 
+// Deprecated: Use sepcific service function
 func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) (bool, error) {
 	outputFile := filepath.Join(util.GetHomeDir(), "Downloads", assetName)
 	var errMsg ErrorMessage
@@ -82,8 +82,7 @@ func GetGitHubReleaseAsset(assetName string, assetDownloadUrl string) (bool, err
 	return true, nil
 }
 
-func GSGetReleases(url string, token string) (any, error) {
-	var releases any
+func GSGetReleases(url string, token string, releases any) (bool, error) {
 	var errMsg ErrorMessage
 
 	cr := client.R()
@@ -99,19 +98,43 @@ func GSGetReleases(url string, token string) (any, error) {
 		Get(url)
 
 	if err != nil { // Error handling.
-		return nil, err
+		return false, err
 	}
 
 	if resp.IsErrorState() { // Status code >= 400.
-		return nil, errors.New(errMsg.Message)
+		return false, errors.New(errMsg.Message)
 	}
 
 	if resp.IsSuccessState() { // Status code is between 200 and 299.
-		return releases, nil
+		return true, nil
 	}
 
 	// Unknown status code.
-	return nil, errors.New("Unknown status: " + resp.Status)
+	return false, errors.New("Unknown status: " + resp.Status)
 }
 
+func GSGetReleaseAsset(assetName string, assetDownloadUrl string, token string) (bool, error) {
+	outputFile := filepath.Join(util.GetHomeDir(), "Downloads", assetName)
+	var errMsg ErrorMessage
 
+	cr := client.R()
+
+	if token != "" {
+		cr.SetHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+
+	resp, err := cr.SetOutputFile(outputFile).
+		SetHeader("Accept", "application/octet-stream").
+		SetErrorResult(&errMsg).
+		Get(assetDownloadUrl)
+
+	if err != nil {
+		return false, err
+	}
+
+	if resp.IsErrorState() {
+		return false, errors.New(errMsg.Message)
+	}
+
+	return true, nil
+}

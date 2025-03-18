@@ -6,6 +6,8 @@ import (
 	"github.com/google/go-github/v69/github"
 )
 
+var GHToken = ""
+
 func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 	client := github.NewClient(nil)
 
@@ -15,6 +17,7 @@ func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 
 	for _, release := range releases {
 		gsReleases = append(gsReleases, GSRelease{
+			Id:      *release.ID,
 			TagName: *release.TagName,
 		})
 	}
@@ -49,7 +52,7 @@ func GitHubReleaseAssetDownload( /* username string, repository string, id int64
 		return false, err
 	} */
 
-	res, err := GetGitHubReleaseAsset(name, url)
+	res, err := GSGetReleaseAsset(name, url, GHToken)
 
 	return res, err
 }

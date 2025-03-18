@@ -6,8 +6,10 @@ import (
 	gitlab "gitlab.com/gitlab-org/api/client-go"
 )
 
+var GLToken = ""
+
 func GitLabReleases(username string, repository string) ([]GSRelease, error) {
-	client, err := gitlab.NewClient("")
+	client, err := gitlab.NewClient(GLToken)
 
 	if err != nil {
 		return nil, err
@@ -27,7 +29,7 @@ func GitLabReleases(username string, repository string) ([]GSRelease, error) {
 }
 
 func GitLabReleaseAssets(username string, repository string, tagName string) ([]GSReleaseAsset, error) {
-	client, err := gitlab.NewClient("")
+	client, err := gitlab.NewClient(GLToken)
 
 	if err != nil {
 		return nil, err
@@ -53,6 +55,6 @@ func GitLabReleaseAssets(username string, repository string, tagName string) ([]
 }
 
 func GitLabReleaseAssetDownload(url string, name string) (bool, error) {
-	res, err := GetGitHubReleaseAsset(name, url)
+	res, err := GSGetReleaseAsset(name, url, GLToken)
 	return res, err
 }
