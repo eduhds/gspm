@@ -2,7 +2,7 @@ package gitservice
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/google/go-github/v69/github"
 )
 
@@ -25,6 +25,16 @@ func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 				Name: *asset.Name,
 			})
 		}
+
+		gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
+			Url:  *release.ZipballURL,
+			Name: fmt.Sprintf("%s.zip", repository),
+		})
+
+		gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
+			Url:  *release.TarballURL,
+			Name: fmt.Sprintf("%s.tar.gz", repository),
+		})
 
 		gsReleases = append(gsReleases, GSRelease{
 			Id:      *release.ID,

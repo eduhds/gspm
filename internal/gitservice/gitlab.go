@@ -29,6 +29,13 @@ func GitLabReleases(username string, repository string) ([]GSRelease, error) {
 			})
 		}
 
+		for _, source := range release.Assets.Sources {
+			gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
+				Url:  source.URL,
+				Name: fmt.Sprintf("%s.%s", repository, source.Format),
+			})
+		}
+
 		gsReleases = append(gsReleases, GSRelease{
 			TagName: release.TagName,
 			Assets:  gsReleaseAssets,
