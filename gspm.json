@@ -9,7 +9,8 @@
             "AssetUrl": "https://github.com/go-task/task/releases/download/v3.39.2/task_windows_amd64.zip",
             "Script": "tar -C C:\\gspm -xf {{ASSET}} task.exe \u0026\u0026 del {{ASSET}}",
             "Platform": "windows",
-            "LastModfied": "2024-11-01T16:09:59-07:00"
+            "LastModfied": "2024-11-01T16:09:59-07:00",
+            "Service": ""
         },
         {
             "Name": "eduhds/gspm",
@@ -17,15 +18,17 @@
             "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.2/gspm-windows-amd64.zip",
             "Script": "tar -C C:\\gspm -xf {{ASSET}} \u0026\u0026 del {{ASSET}}",
             "Platform": "windows",
-            "LastModfied": "2024-11-01T16:22:32-07:00"
+            "LastModfied": "2024-11-01T16:22:32-07:00",
+            "Service": ""
         },
         {
             "Name": "eduhds/gspm",
-            "Tag": "v0.1.3",
-            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.1.3/gspm-macos-amd64.tar.gz",
-            "Script": "rm {{ASSET}}",
+            "Tag": "v0.2.4",
+            "AssetUrl": "https://api.github.com/repos/eduhds/gspm/releases/assets/232165194",
+            "Script": "mv {{ASSET}} /tmp",
             "Platform": "darwin",
-            "LastModfied": "2024-12-03T20:06:41-03:00"
+            "LastModfied": "2025-03-25T19:20:45-03:00",
+            "Service": "github"
         },
         {
             "Name": "eduhds/gspm",
@@ -33,7 +36,26 @@
             "AssetUrl": "https://api.github.com/repos/eduhds/gspm/releases/assets/227416098",
             "Script": "mv {{ASSET}} .",
             "Platform": "linux",
-            "LastModfied": "2025-02-19T21:30:17Z"
+            "LastModfied": "2025-02-19T21:30:17Z",
+            "Service": ""
+        },
+        {
+            "Name": "eduhds/gspm",
+            "Tag": "test",
+            "AssetUrl": "https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_v0.2.4_Linux_x86_64.tar.gz",
+            "Script": "mv {{ASSET}} /tmp",
+            "Platform": "darwin",
+            "LastModfied": "2025-03-25T19:19:19-03:00",
+            "Service": "gitlab"
+        },
+        {
+            "Name": "eduhds/gspm",
+            "Tag": "gspm_v0.2.4_Linux_x86_64.tar.gz",
+            "AssetUrl": "https://api.bitbucket.org/2.0/repositories/eduhds/gspm/downloads/gspm_v0.2.4_Linux_x86_64.tar.gz",
+            "Script": "mv {{ASSET}} /tmp",
+            "Platform": "darwin",
+            "LastModfied": "2025-03-25T19:22:12-03:00",
+            "Service": "bitbucket"
         }
     ]
 }

@@ -10,6 +10,12 @@ import (
 	"github.com/eduhds/gspm/internal/util"
 )
 
+var serviceSymbol = map[string]string{
+	"gitlab": "🦊",
+	"github": "🐙",
+	"bitbucket": "🪣 ",
+}
+
 func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 	stopReleasesSpn := tui.ShowSpinner(fmt.Sprintf("Fetching %s releases...", gsp.Name))
 
@@ -100,7 +106,7 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 		var found = false
 
 		for index, configPackage := range cfg.Packages {
-			if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
+			if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name && ((configPackage.Service != "" && configPackage.Service == service) || (service == gitservice.GITHUB)) {
 				cfg.Packages[index] = gsp
 				found = true
 				break
@@ -196,6 +202,9 @@ func CommandList(config GSConfig) {
 		tui.TextInfo("📦 " + item.Name + "@" + item.Tag)
 		tui.ShowMessage("🔗 " + item.AssetUrl)
 		tui.ShowMessage("🛠️  " + item.Script)
+		if item.Service != "" {
+			tui.ShowMessage(serviceSymbol[item.Service] + " " + item.Service)
+		}
 		tui.ShowLine()
 	}
 }
