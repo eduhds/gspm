@@ -26,6 +26,8 @@ func BitbucketReleases(username string, repository string) ([]GSRelease, error) 
 			Name: release.Name,
 		})
 
+		// Obs.: Source tarballs must be fetched separately
+
 		gsReleases = append(gsReleases, GSRelease{
 			TagName: release.Name,
 			Assets:  gsReleaseAssets,

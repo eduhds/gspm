@@ -3,6 +3,7 @@ package gitservice
 import (
 	"context"
 	"fmt"
+
 	"github.com/google/go-github/v69/github"
 )
 
@@ -10,6 +11,10 @@ var GHToken = ""
 
 func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 	client := github.NewClient(nil)
+
+	if GHToken != "" {
+		client = client.WithAuthToken(GHToken)
+	}
 
 	releases, _, err := client.Repositories.ListReleases(context.Background(), username, repository, nil)
 
@@ -28,12 +33,12 @@ func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 
 		gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
 			Url:  *release.ZipballURL,
-			Name: fmt.Sprintf("%s.zip", repository),
+			Name: fmt.Sprintf("Source_%s.zip", repository),
 		})
 
 		gsReleaseAssets = append(gsReleaseAssets, GSReleaseAsset{
 			Url:  *release.TarballURL,
-			Name: fmt.Sprintf("%s.tar.gz", repository),
+			Name: fmt.Sprintf("Source_%s.tar.gz", repository),
 		})
 
 		gsReleases = append(gsReleases, GSRelease{
@@ -48,6 +53,10 @@ func GitHubReleases(username string, repository string) ([]GSRelease, error) {
 
 func GitHubReleaseAssetDownload( /* username string, repository string, id int64, */ url string, name string) (bool, error) {
 	/* client := github.NewClient(nil)
+
+	if GHToken != "" {
+		client = client.WithAuthToken(GHToken)
+	}
 
 	_, url, err := client.Repositories.DownloadReleaseAsset(context.Background(), username, repository, id, nil)
 
