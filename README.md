@@ -5,7 +5,11 @@
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
 
-Git Services Package Manager (GitHub supported only for now).
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white)
+![Bitbucket](https://img.shields.io/badge/bitbucket-%230047B3.svg?style=for-the-badge&logo=bitbucket&logoColor=white)
+
+Git Services Package Manager (GitHub, GitLab and Bitbucket).
 
 Support installing from releases with custom script.
 
@@ -24,15 +28,15 @@ Support installing from releases with custom script.
 
 ## ⬇️ Install
 
+### Installing manually
+
+Download manually from [releases](https://github.com/eduhds/gspm/releases).
+
 <p>
   <a href="https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_v0.2.4_Windows_x86_64.zip"><img src="assets/BadgeWindows.png" alt="Windows" width="120" /></a>
   <a href="https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_v0.2.4_Linux_x86_64.tar.gz"><img src="assets/BadgeLinux.png" alt="Linux" width="120" /></a>
   <a href="https://github.com/eduhds/gspm/releases/download/v0.2.4/gspm_v0.2.4_Darwin_x86_64.tar.gz"><img src="assets/BadgeMacOS.png" alt="macOS" width="120" /></a>
 </p>
-
-### Installing manually
-
-Download manually from [releases](https://github.com/eduhds/gspm/releases).
 
 ### Install script
 
@@ -130,4 +134,5 @@ Contributions are welcome, see [Contributions Guide](./CONTRIBUTING.md) and [Cod
 -   [alexflint/go-arg](https://github.com/alexflint/go-arg)
 -   [imroc/req](https://github.com/imroc/req)
 -   [pterm/pterm](https://github.com/pterm/pterm)
--   [go-task/task](https://github.com/go-task/task)
+-   [go-task/task](https://github.com/google/go-github)
+-   [gitlab-org/api/client-go](https://gitlab.com/gitlab-org/api/client-go)
