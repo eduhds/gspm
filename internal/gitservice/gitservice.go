@@ -16,6 +16,12 @@ const (
 	BITBUCKET string = "bitbucket"
 )
 
+var ServiceSymbol = map[string]string{
+	"gitlab":    "🦊",
+	"github":    "🐙",
+	"bitbucket": "🪣 ",
+}
+
 var client = req.C().
 	SetTimeout(10 * 60 * time.Second)
 

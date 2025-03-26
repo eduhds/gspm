@@ -10,12 +10,6 @@ import (
 	"github.com/eduhds/gspm/internal/util"
 )
 
-var serviceSymbol = map[string]string{
-	"gitlab": "🦊",
-	"github": "🐙",
-	"bitbucket": "🪣 ",
-}
-
 func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 	stopReleasesSpn := tui.ShowSpinner(fmt.Sprintf("Fetching %s releases...", gsp.Name))
 
@@ -106,7 +100,7 @@ func CommandAdd(cfg GSConfig, gsp GSPackage) GSConfig {
 		var found = false
 
 		for index, configPackage := range cfg.Packages {
-			if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name && ((configPackage.Service != "" && configPackage.Service == service) || (service == gitservice.GITHUB)) {
+			if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name && MatchService(configPackage) {
 				cfg.Packages[index] = gsp
 				found = true
 				break
@@ -135,7 +129,7 @@ func CommandEdit(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	}
 
 	for index, configPackage := range cfg.Packages {
-		if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name {
+		if configPackage.Platform == runtime.GOOS && configPackage.Name == gsp.Name && MatchService(configPackage) {
 			gsp.LastModfied = util.DateLocalNow()
 			cfg.Packages[index] = gsp
 			break
@@ -203,7 +197,7 @@ func CommandList(config GSConfig) {
 		tui.ShowMessage("🔗 " + item.AssetUrl)
 		tui.ShowMessage("🛠️  " + item.Script)
 		if item.Service != "" {
-			tui.ShowMessage(serviceSymbol[item.Service] + " " + item.Service)
+			tui.ShowMessage(gitservice.ServiceSymbol[item.Service] + " " + item.Service)
 		}
 		tui.ShowLine()
 	}
@@ -213,7 +207,7 @@ func CommandRemove(cfg GSConfig, gsp GSPackage, withScript bool) GSConfig {
 	var keepedPackages []GSPackage
 
 	for _, item := range cfg.Packages {
-		if item.Platform == runtime.GOOS && item.Name == gsp.Name {
+		if item.Platform == runtime.GOOS && item.Name == gsp.Name && MatchService(item) {
 			if withScript {
 				if !RunScript("", gsp.Script) {
 					return cfg
