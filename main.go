@@ -49,7 +49,18 @@ func main() {
 	arg.MustParse(&args)
 
 	if args.Service != "" {
-		service = args.Service
+		validService := false
+		for _, s := range gitservice.SupportedServices {
+			if s == args.Service {
+				service = args.Service
+				validService = true
+				break
+			}
+		}
+		if !validService {
+			tui.ShowError("Invalid service: " + args.Service)
+			os.Exit(1)
+		}
 	}
 
 	if service == "github" && args.GitHubToken != "" {
@@ -101,24 +112,31 @@ func main() {
 				if option != "list" && option != "install" {
 					var knownPackages []string
 					for _, item := range PlatformPackages(config) {
-						knownPackages = append(knownPackages, item.Name)
+						if MatchService(item) {
+							knownPackages = append(knownPackages, item.Name)
+						}
 					}
 
 					if len(knownPackages) > 0 {
-						knownPackages = append(knownPackages, "other")
+						knownPackages = append(knownPackages, "<none>")
 						repo = tui.ShowOptions("Select a package", knownPackages)
 					} else {
-						repo = "other"
+						repo = "<none>"
 					}
 
-					if repo == "other" {
+					if repo == "<none>" {
 						repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
 					}
 				}
 
-				program := strings.TrimSpace(strings.Join(os.Args, " "))
+				program := os.Args[0] // strings.TrimSpace(strings.Join(os.Args, " "))
+				args := []string{option, repo}
 
-				cmd := exec.Command(program, option, repo)
+				if len(os.Args) > 1 {
+					args = append(args, os.Args[1:]...)
+				}
+
+				cmd := exec.Command(program, args...)
 				cmd.Stdin = os.Stdin
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
@@ -187,9 +205,18 @@ func main() {
 					if mustExist && len(PlatformPackages(config)) > 0 {
 						var knownPackages []string
 						for _, item := range PlatformPackages(config) {
-							knownPackages = append(knownPackages, item.Name)
+							if MatchService(item) {
+								knownPackages = append(knownPackages, item.Name)
+							}
 						}
+
+						knownPackages = append(knownPackages, "<cancel>")
 						targetPackage.Name = tui.ShowOptions("Select a package", knownPackages)
+
+						if targetPackage.Name == "<cancel>" {
+							targetPackage = GSPackage{}
+							break
+						}
 						continue
 					} else {
 						targetPackage = GSPackage{}

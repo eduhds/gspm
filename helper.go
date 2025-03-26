@@ -161,5 +161,5 @@ func ResolveAsset(url string, name string) (bool, error) {
 }
 
 func MatchService(gsp GSPackage) bool {
-	return ((gsp.Service != "" && gsp.Service == service) || (service == gitservice.GITHUB))
+	return ((gsp.Service != "" && gsp.Service == service) || (gsp.Service == "" && service == gitservice.GITHUB))
 }

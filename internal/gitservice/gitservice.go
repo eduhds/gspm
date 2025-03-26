@@ -16,6 +16,8 @@ const (
 	BITBUCKET string = "bitbucket"
 )
 
+var SupportedServices = []string{GITHUB, GITLAB, BITBUCKET}
+
 var ServiceSymbol = map[string]string{
 	"gitlab":    "🦊",
 	"github":    "🐙",
