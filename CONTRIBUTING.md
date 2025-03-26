@@ -29,22 +29,16 @@ To run a command:
 go run . <command> <user>/<repository>
 ```
 
-Run release build:
-
-```sh
-task build:release
-```
-
 ### Commit message convention
 
 We follow the [conventional commits specification](https://www.conventionalcommits.org/en) for our commit messages:
 
-- `fix`: bug fixes, e.g. fix crash due to deprecated method.
-- `feat`: new features, e.g. add new method to the module.
-- `refactor`: code refactor, e.g. migrate from class components to hooks.
-- `docs`: changes into documentation, e.g. add usage example for the module..
-- `test`: adding or updating tests, e.g. add integration tests using detox.
-- `chore`: tooling changes, e.g. change CI config.
+-   `fix`: bug fixes, e.g. fix crash due to deprecated method.
+-   `feat`: new features, e.g. add new method to the module.
+-   `refactor`: code refactor, e.g. migrate from class components to hooks.
+-   `docs`: changes into documentation, e.g. add usage example for the module..
+-   `test`: adding or updating tests, e.g. add integration tests using detox.
+-   `chore`: tooling changes, e.g. change CI config.
 
 TODO: Our pre-commit hooks verify that your commit message matches this format when committing.
 
@@ -58,10 +52,10 @@ TODO: Our pre-commit hooks verify that the linter and tests pass when committing
 
 When you're sending a pull request:
 
-- Prefer small pull requests focused on one change.
-- Verify that linters and tests are passing.
-- Review the documentation to make sure it looks good.
-- Follow the pull request template when opening a pull request.
-- For pull requests that change the API or implementation, discuss with maintainers first by opening an issue.
+-   Prefer small pull requests focused on one change.
+-   Verify that linters and tests are passing.
+-   Review the documentation to make sure it looks good.
+-   Follow the pull request template when opening a pull request.
+-   For pull requests that change the API or implementation, discuss with maintainers first by opening an issue.
 
 This contributing guide was inspired by [create-react-native-library](https://github.com/callstack/react-native-builder-bob).

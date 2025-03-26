@@ -111,9 +111,6 @@ GSPM_GITHUB_TOKEN='your token here' gspm add username/repository
 ```sh
 # Run
 go run . <command> <arguments>
-
-# Build
-task build:release
 ```
 
 ## 🤝 Support
@@ -134,5 +131,5 @@ Contributions are welcome, see [Contributions Guide](./CONTRIBUTING.md) and [Cod
 -   [alexflint/go-arg](https://github.com/alexflint/go-arg)
 -   [imroc/req](https://github.com/imroc/req)
 -   [pterm/pterm](https://github.com/pterm/pterm)
--   [go-task/task](https://github.com/google/go-github)
+-   [google/go-github](https://github.com/google/go-github)
 -   [gitlab-org/api/client-go](https://gitlab.com/gitlab-org/api/client-go)
