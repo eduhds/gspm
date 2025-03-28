@@ -42,7 +42,7 @@ func ResolvePackage(value string, cfg GSConfig, mustExist bool) (GSPackage, erro
 	}
 
 	for _, item := range packages {
-		if item.Name == name && item.Service == service {
+		if item.Name == name && MatchService(item) {
 			if tag != "" && item.Tag != tag {
 				item.Tag = tag
 			}

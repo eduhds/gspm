@@ -69,7 +69,7 @@ func GSGetReleaseAsset(assetName string, assetDownloadUrl string, token string) 
 	}
 
 	resp, err := cr.SetOutputFile(outputFile).
-		//SetHeader("Accept", "application/octet-stream").
+		SetHeader("Accept", "application/octet-stream").
 		SetErrorResult(&errMsg).
 		Get(assetDownloadUrl)
 
