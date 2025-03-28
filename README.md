@@ -57,7 +57,7 @@ powershell -c "irm https://dub.sh/gspm.ps1 | iex"
 ### CLI
 
 ```sh
-Usage: gspm [--configdir CONFIGDIR] [--shellcommand SHELLCOMMAND] [--githubtoken GITHUBTOKEN] [--script SCRIPT] [COMMAND [REPOS [REPOS ...]]]
+Usage: gspm [--configdir CONFIGDIR] [--shellcommand SHELLCOMMAND] [--githubtoken GITHUBTOKEN] [--gitlabtoken GITLABTOKEN] [--bitbuckettoken BITBUCKETTOKEN] [--script SCRIPT] [--service SERVICE] [COMMAND [REPOS [REPOS ...]]]
 
 Positional arguments:
   COMMAND                Command to run. Must be add, remove, install, edit, info or list.
@@ -67,8 +67,11 @@ Options:
   --configdir CONFIGDIR [env: GSPM_CONFIG_DIR]
   --shellcommand SHELLCOMMAND [env: GSPM_SHELL_COMMAND]
   --githubtoken GITHUBTOKEN [env: GSPM_GITHUB_TOKEN]
+  --gitlabtoken GITLABTOKEN [env: GSPM_GITLAB_TOKEN]
+  --bitbuckettoken BITBUCKETTOKEN [env: GSPM_BITBUCKET_TOKEN]
   --script SCRIPT, -s SCRIPT
                          Script to run after download a asset. Use {{ASSET}} to reference the asset path.
+  --service SERVICE      Git Service (github, gitlab, bitbucket) [default: github]
   --help, -h             display this help and exit
   --version              display version and exit
 ```
@@ -99,11 +102,18 @@ gspm list
 # Install (from ~/.config/gspm.json)
 gspm install
 
+# Service (default: github)
+gspm <command> --service github
+gspm <command> --service gitlab
+gspm <command> --service bitbucket
+
 # Custom config dir path
 GSPM_CONFIG_DIR=/path/to/custom/dir gspm <command> ...
 
-# GitHub private repositories
-GSPM_GITHUB_TOKEN='your token here' gspm add username/repository
+# Private repositories
+GSPM_GITHUB_TOKEN='your token here' gspm add ...
+GSPM_GITLAB_TOKEN='your token here' gspm add ...
+GSPM_BITBUCKET_TOKEN='your token here' gspm add ...
 ```
 
 ## 🛠️ Development
