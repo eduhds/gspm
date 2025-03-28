@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/eduhds/gspm/internal/gitservice"
 	"github.com/eduhds/gspm/internal/tui"
 	"github.com/eduhds/gspm/internal/util"
 )
@@ -41,7 +42,7 @@ func ResolvePackage(value string, cfg GSConfig, mustExist bool) (GSPackage, erro
 	}
 
 	for _, item := range packages {
-		if item.Name == name {
+		if item.Name == name && item.Service == service {
 			if tag != "" && item.Tag != tag {
 				item.Tag = tag
 			}
@@ -120,4 +121,45 @@ func AssetNameFromUrl(url string) string {
 	urlSplited := strings.Split(url, "/")
 	assetNameFromUrl := urlSplited[len(urlSplited)-1]
 	return assetNameFromUrl
+}
+
+func ResolveReleases(gsp GSPackage) ([]gitservice.GSRelease, error) {
+	var (
+		username   string = strings.Split(gsp.Name, "/")[0]
+		repository string = strings.Split(gsp.Name, "/")[1]
+	)
+
+	var rel []gitservice.GSRelease
+	var err error
+
+	switch service {
+	case gitservice.GITLAB:
+		rel, err = gitservice.GitLabReleases(username, repository)
+	case gitservice.BITBUCKET:
+		rel, err = gitservice.BitbucketReleases(username, repository)
+	default:
+		rel, err = gitservice.GitHubReleases(username, repository)
+	}
+
+	return rel, err
+}
+
+func ResolveAsset(url string, name string) (bool, error) {
+	var res bool
+	var err error
+
+	switch service {
+	case gitservice.GITLAB:
+		res, err = gitservice.GitLabReleaseAssetDownload(url, name)
+	case gitservice.BITBUCKET:
+		res, err = gitservice.BitbucketReleaseAssetDownload(url, name)
+	default:
+		res, err = gitservice.GitHubReleaseAssetDownload(url, name)
+	}
+
+	return res, err
+}
+
+func MatchService(gsp GSPackage) bool {
+	return ((gsp.Service != "" && gsp.Service == service) || (gsp.Service == "" && service == gitservice.GITHUB))
 }

@@ -6,8 +6,6 @@ AppDir
 
 .envrc
 
-task.exe
-
 *.syso
 
 gspm.json.bkp

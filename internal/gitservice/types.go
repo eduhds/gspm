@@ -1,5 +1,25 @@
 package gitservice
 
+type GSRelease struct {
+	Id      int64
+	TagName string
+	Assets  []GSReleaseAsset
+}
+
+type GSReleaseAsset struct {
+	Url  string
+	Id   int64
+	Name string
+}
+
+type ErrorMessage struct {
+	Message string `json:"message"`
+}
+
+//
+// GITHUB
+//
+
 type GSGitHubReleaseAuthor struct {
 	Login             string `json:"login"`
 	Id                int    `json:"id"`
@@ -23,7 +43,7 @@ type GSGitHubReleaseAuthor struct {
 
 type GSGitHubReleaseAsset struct {
 	Url                string                `json:"url"`
-	Id                 int                   `json:"id"`
+	Id                 int64                 `json:"id"`
 	NodeId             string                `json:"node_id"`
 	Name               string                `json:"name"`
 	Label              string                `json:"label"`
@@ -42,7 +62,7 @@ type GSGitHubRelease struct {
 	AssetsUrl       string                 `json:"assets_url"`
 	UploadUrl       string                 `json:"upload_url"`
 	HtmlUrl         string                 `json:"html_url"`
-	Id              int                    `json:"id"`
+	Id              int64                  `json:"id"`
 	Author          GSGitHubReleaseAuthor  `json:"author"`
 	NodeId          string                 `json:"node_id"`
 	TagName         string                 `json:"tag_name"`
@@ -56,4 +76,44 @@ type GSGitHubRelease struct {
 	TarballUrl      string                 `json:"tarball_url"`
 	ZipballUrl      string                 `json:"zipball_url"`
 	Body            string                 `json:"body"`
+}
+
+//
+// BITBUCKET
+//
+
+type BitbucketResponse struct {
+	Values  []BitbucketDownload `json:"values"`
+	Pagelen int                 `json:"pagelen"`
+	Size    int                 `json:"size"`
+	Page    int                 `json:"page"`
+}
+
+type BitbucketDownload struct {
+	Name      string         `json:"name"`
+	Size      int64          `json:"size"`
+	CreatedOn string         `json:"created_on"`
+	User      BitbucketUser  `json:"user"`
+	Downloads int            `json:"downloads"`
+	Links     BitbucketLinks `json:"links"`
+	Type      string         `json:"type"`
+}
+
+type BitbucketUser struct {
+	DisplayName string         `json:"display_name"`
+	Links       BitbucketLinks `json:"links"`
+	Type        string         `json:"type"`
+	Uuid        string         `json:"uuid"`
+	AccountId   string         `json:"account_id"`
+	Nickname    string         `json:"nickname"`
+}
+
+type BitbucketLinks struct {
+	Self   BitbucketLink `json:"self"`
+	Avatar BitbucketLink `json:"avatar"`
+	Html   BitbucketLink `json:"html"`
+}
+
+type BitbucketLink struct {
+	Href string `json:"href"`
 }

@@ -15,7 +15,7 @@ import (
 //go:generate go-winres make --in windows/winres.json
 
 const appname = "gspm"
-const version = "0.2.4"
+const version = "1.0.0"
 const description = "Thanks for using gspm, the Git Services Package Manager.\n"
 const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" +
 	"a8\"    `Y88  I8[    \"\"  88P'    \"8a  88P'   \"88\"    \"8a \n" +
@@ -25,28 +25,54 @@ const asciiArt = "\n ,adPPYb,d8  ,adPPYba,  8b,dPPYba,   88,dPYba,,adPYba,  \n" 
 	" aa,    ,88             88                              \n" +
 	"  \"Y8bbdP\"              88                              \n"
 
-var customConfigDir string = ""
-var customShellCommand string = ""
-var downloadPrefix = util.GetDownloadsDir()
+var (
+	service            string = "github"
+	customConfigDir    string = ""
+	customShellCommand string = ""
+	downloadPrefix            = util.GetDownloadsDir()
+)
 
-func (args) Version() string {
+func (CliArgs) Version() string {
 	return fmt.Sprintf("%s v%s", appname, version)
 }
 
-func (args) Description() string {
+func (CliArgs) Description() string {
 	return description
 }
 
-func (args) Epilogue() string {
+func (CliArgs) Epilogue() string {
 	return "For more information visit https://github.com/eduhds/gspm"
 }
 
 func main() {
-	var args args
+	var args CliArgs
 	arg.MustParse(&args)
 
-	if args.GitHubToken != "" {
+	if args.Service != "" {
+		validService := false
+		for _, s := range gitservice.SupportedServices {
+			if s == args.Service {
+				service = args.Service
+				validService = true
+				break
+			}
+		}
+		if !validService {
+			tui.ShowError("Invalid service: " + args.Service)
+			os.Exit(1)
+		}
+	}
+
+	if service == "github" && args.GitHubToken != "" {
 		gitservice.GHToken = args.GitHubToken
+	}
+
+	if service == "gitlab" && args.GitLabToken != "" {
+		gitservice.GLToken = args.GitLabToken
+	}
+
+	if service == "bitbucket" && args.BitbucketToken != "" {
+		gitservice.BBToken = args.BitbucketToken
 	}
 
 	if args.ConfigDir != "" {
@@ -86,24 +112,31 @@ func main() {
 				if option != "list" && option != "install" {
 					var knownPackages []string
 					for _, item := range PlatformPackages(config) {
-						knownPackages = append(knownPackages, item.Name)
+						if MatchService(item) {
+							knownPackages = append(knownPackages, item.Name)
+						}
 					}
 
 					if len(knownPackages) > 0 {
-						knownPackages = append(knownPackages, "other")
+						knownPackages = append(knownPackages, "<none>")
 						repo = tui.ShowOptions("Select a package", knownPackages)
 					} else {
-						repo = "other"
+						repo = "<none>"
 					}
 
-					if repo == "other" {
+					if repo == "<none>" {
 						repo = tui.ShowTextInput(fmt.Sprintf("What repository do you want \"%s\"? (Format: username/repository)", option), false, "")
 					}
 				}
 
-				program := strings.TrimSpace(strings.Join(os.Args, " "))
+				program := os.Args[0] // strings.TrimSpace(strings.Join(os.Args, " "))
+				args := []string{option, repo}
 
-				cmd := exec.Command(program, option, repo)
+				if len(os.Args) > 1 {
+					args = append(args, os.Args[1:]...)
+				}
+
+				cmd := exec.Command(program, args...)
 				cmd.Stdin = os.Stdin
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
@@ -172,9 +205,18 @@ func main() {
 					if mustExist && len(PlatformPackages(config)) > 0 {
 						var knownPackages []string
 						for _, item := range PlatformPackages(config) {
-							knownPackages = append(knownPackages, item.Name)
+							if MatchService(item) {
+								knownPackages = append(knownPackages, item.Name)
+							}
 						}
+
+						knownPackages = append(knownPackages, "<cancel>")
 						targetPackage.Name = tui.ShowOptions("Select a package", knownPackages)
+
+						if targetPackage.Name == "<cancel>" {
+							targetPackage = GSPackage{}
+							break
+						}
 						continue
 					} else {
 						targetPackage = GSPackage{}
