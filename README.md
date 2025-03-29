@@ -14,7 +14,7 @@ Git Services Package Manager (GitHub, GitLab and Bitbucket).
 Support installing from releases with custom script.
 
 <p align="center">
-  <img src="./screencast.gif" style="display: block; margin: auto;" />
+  <img src="./screenshot.png" style="display: block; margin: auto;" />
 </p>
 
 ## ✨ Features
