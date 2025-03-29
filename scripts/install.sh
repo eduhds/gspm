@@ -23,7 +23,7 @@ EOF
 
 printf "$COLLOR_OFF"
 
-version=v1.0.0
+version=v1.0.1
 os=$(uname -s)
 arch=x86_64
 url=https://github.com/eduhds/gspm/releases/download/${version}/gspm_${version}_${os}_${arch}.tar.gz
