@@ -1,6 +1,6 @@
 # gspm
 
-<img alt="facebook/react" src="https://minodo.com.br/lg/?owner=eduhds&repo=gspm" width="100%" />
+<img alt="eduhds/gspm" src="https://minodo.com.br/lg/?owner=eduhds&repo=gspm" width="100%" />
 
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
